@@ -85,9 +85,8 @@ org.puremvc.haxe.patterns.observer.Notification.prototype.toString = function() 
 	msg += "\nBody:" + (this.body == null?"null":this.body.toString());
 	msg += "\nType:" + (this.type == null?"null":this.type);
 	{
-		var $tmp = msg;
 		$s.pop();
-		return $tmp;
+		return msg;
 	}
 	$s.pop();
 }
@@ -362,7 +361,7 @@ List.__name__ = ["List"];
 List.prototype.add = function(item) {
 	$s.push("List::add");
 	var $spos = $s.length;
-	var x = [item,null];
+	var x = [item];
 	if(this.h == null) this.h = x;
 	else this.q[1] = x;
 	this.q = x;
@@ -387,9 +386,8 @@ List.prototype.filter = function(f) {
 		if(f(v)) l2.add(v);
 	}
 	{
-		var $tmp = l2;
 		$s.pop();
-		return $tmp;
+		return l2;
 	}
 	$s.pop();
 }
@@ -419,7 +417,7 @@ List.prototype.iterator = function() {
 	var $spos = $s.length;
 	{
 		var $tmp = { h : this.h, hasNext : function() {
-			$s.push("List::iterator@158");
+			$s.push("List::iterator@193");
 			var $spos = $s.length;
 			{
 				var $tmp = (this.h != null);
@@ -428,21 +426,17 @@ List.prototype.iterator = function() {
 			}
 			$s.pop();
 		}, next : function() {
-			$s.push("List::iterator@161");
+			$s.push("List::iterator@196");
 			var $spos = $s.length;
+			if(this.h == null) {
+				$s.pop();
+				return null;
+			}
+			var x = this.h[0];
+			this.h = this.h[1];
 			{
-				if(this.h == null) {
-					var $tmp = null;
-					$s.pop();
-					return $tmp;
-				}
-				var x = this.h[0];
-				this.h = this.h[1];
-				{
-					var $tmp = x;
-					$s.pop();
-					return $tmp;
-				}
+				$s.pop();
+				return x;
 			}
 			$s.pop();
 		}}
@@ -459,12 +453,12 @@ List.prototype.join = function(sep) {
 	var l = this.h;
 	while(l != null) {
 		if(first) first = false;
-		else s.add(sep);
-		s.add(l[0]);
+		else s.b += sep;
+		s.b += l[0];
 		l = l[1];
 	}
 	{
-		var $tmp = s.toString();
+		var $tmp = s.b;
 		$s.pop();
 		return $tmp;
 	}
@@ -492,9 +486,8 @@ List.prototype.map = function(f) {
 		b.add(f(v));
 	}
 	{
-		var $tmp = b;
 		$s.pop();
-		return $tmp;
+		return b;
 	}
 	$s.pop();
 }
@@ -502,18 +495,16 @@ List.prototype.pop = function() {
 	$s.push("List::pop");
 	var $spos = $s.length;
 	if(this.h == null) {
-		var $tmp = null;
 		$s.pop();
-		return $tmp;
+		return null;
 	}
 	var x = this.h[0];
 	this.h = this.h[1];
 	if(this.h == null) this.q = null;
 	this.length--;
 	{
-		var $tmp = x;
 		$s.pop();
-		return $tmp;
+		return x;
 	}
 	$s.pop();
 }
@@ -539,18 +530,16 @@ List.prototype.remove = function(v) {
 			if(this.q == l) this.q = prev;
 			this.length--;
 			{
-				var $tmp = true;
 				$s.pop();
-				return $tmp;
+				return true;
 			}
 		}
 		prev = l;
 		l = l[1];
 	}
 	{
-		var $tmp = false;
 		$s.pop();
-		return $tmp;
+		return false;
 	}
 	$s.pop();
 }
@@ -560,16 +549,16 @@ List.prototype.toString = function() {
 	var s = new StringBuf();
 	var first = true;
 	var l = this.h;
-	s.add("{");
+	s.b += "{";
 	while(l != null) {
 		if(first) first = false;
-		else s.add(", ");
-		s.add(l[0]);
+		else s.b += ", ";
+		s.b += l[0];
 		l = l[1];
 	}
-	s.add("}");
+	s.b += "}";
 	{
-		var $tmp = s.toString();
+		var $tmp = s.b;
 		$s.pop();
 		return $tmp;
 	}
@@ -726,7 +715,10 @@ org.puremvc.haxe.core.Controller.prototype.executeCommand = function(note) {
 	$s.push("org.puremvc.haxe.core.Controller::executeCommand");
 	var $spos = $s.length;
 	var commandClassRef = this.commandMap.get(note.getName());
-	if(commandClassRef == null) return;
+	if(commandClassRef == null) {
+		$s.pop();
+		return;
+	}
 	var commandInstance = Type.createInstance(commandClassRef,[]);
 	commandInstance.execute(note);
 	$s.pop();
@@ -898,12 +890,10 @@ haxe.unit.TestRunner.__name__ = ["haxe","unit","TestRunner"];
 haxe.unit.TestRunner.print = function(v) {
 	$s.push("haxe.unit.TestRunner::print");
 	var $spos = $s.length;
-	{
-		var msg = StringTools.htmlEscape(js.Boot.__string_rec(v,"")).split("\n").join("<br/>");
-		var d = document.getElementById("haxe:trace");
-		if(d == null) alert("haxe:trace element not found");
-		else d.innerHTML += msg;
-	}
+	var msg = StringTools.htmlEscape(js.Boot.__string_rec(v,"")).split("\n").join("<br/>");
+	var d = document.getElementById("haxe:trace");
+	if(d == null) alert("haxe:trace element not found");
+	else d.innerHTML += msg;
 	$s.pop();
 }
 haxe.unit.TestRunner.customTrace = function(v,p) {
@@ -919,16 +909,6 @@ haxe.unit.TestRunner.prototype.add = function(c) {
 	$s.pop();
 }
 haxe.unit.TestRunner.prototype.cases = null;
-haxe.unit.TestRunner.prototype.getBT = function(e) {
-	$s.push("haxe.unit.TestRunner::getBT");
-	var $spos = $s.length;
-	{
-		var $tmp = haxe.Stack.toString(haxe.Stack.exceptionStack());
-		$s.pop();
-		return $tmp;
-	}
-	$s.pop();
-}
 haxe.unit.TestRunner.prototype.result = null;
 haxe.unit.TestRunner.prototype.run = function() {
 	$s.push("haxe.unit.TestRunner::run");
@@ -969,7 +949,7 @@ haxe.unit.TestRunner.prototype.runCase = function(t) {
 				t.currentTest.method = fname;
 				t.setup();
 				try {
-					Reflect.callMethod(t,field,new Array());
+					field.apply(t,new Array());
 					if(t.currentTest.done) {
 						t.currentTest.success = true;
 						haxe.unit.TestRunner.print(".");
@@ -988,7 +968,7 @@ haxe.unit.TestRunner.prototype.runCase = function(t) {
 							while($s.length >= $spos) $e.unshift($s.pop());
 							$s.push($e[0]);
 							haxe.unit.TestRunner.print("F");
-							t.currentTest.backtrace = this.getBT(e);
+							t.currentTest.backtrace = haxe.Stack.toString(haxe.Stack.exceptionStack());
 						}
 					} else {
 						var e = $e1;
@@ -1003,7 +983,7 @@ haxe.unit.TestRunner.prototype.runCase = function(t) {
 							else {
 								t.currentTest.error = "exception thrown : " + e;
 							}
-							t.currentTest.backtrace = this.getBT(e);
+							t.currentTest.backtrace = haxe.Stack.toString(haxe.Stack.exceptionStack());
 						}
 					}
 				}
@@ -1124,9 +1104,8 @@ org.puremvc.haxe.core.Model.prototype.removeProxy = function(proxyName) {
 		proxy.onRemove();
 	}
 	{
-		var $tmp = proxy;
 		$s.pop();
-		return $tmp;
+		return proxy;
 	}
 	$s.pop();
 }
@@ -1144,51 +1123,34 @@ org.puremvc.haxe.core.Model.prototype.__class__ = org.puremvc.haxe.core.Model;
 org.puremvc.haxe.core.Model.__interfaces__ = [org.puremvc.haxe.interfaces.IModel];
 Reflect = function() { }
 Reflect.__name__ = ["Reflect"];
-Reflect.empty = function() {
-	$s.push("Reflect::empty");
-	var $spos = $s.length;
-	{
-		var $tmp = {}
-		$s.pop();
-		return $tmp;
-	}
-	$s.pop();
-}
 Reflect.hasField = function(o,field) {
 	$s.push("Reflect::hasField");
 	var $spos = $s.length;
+	if(o.hasOwnProperty != null) {
+		var $tmp = o.hasOwnProperty(field);
+		$s.pop();
+		return $tmp;
+	}
+	var arr = Reflect.fields(o);
+	{ var $it2 = arr.iterator();
+	while( $it2.hasNext() ) { var t = $it2.next();
+	if(t == field) {
+		$s.pop();
+		return true;
+	}
+	}}
 	{
-		if(o.hasOwnProperty != null) {
-			var $tmp = o.hasOwnProperty(field);
-			$s.pop();
-			return $tmp;
-		}
-		var arr = Reflect.fields(o);
-		{ var $it2 = arr.iterator();
-		while( $it2.hasNext() ) { var t = $it2.next();
-		if(t == field) {
-			var $tmp = true;
-			$s.pop();
-			return $tmp;
-		}
-		}}
-		{
-			var $tmp = false;
-			$s.pop();
-			return $tmp;
-		}
+		$s.pop();
+		return false;
 	}
 	$s.pop();
 }
 Reflect.field = function(o,field) {
 	$s.push("Reflect::field");
 	var $spos = $s.length;
+	var v = null;
 	try {
-		{
-			var $tmp = o[field];
-			$s.pop();
-			return $tmp;
-		}
+		v = o[field];
 	}
 	catch( $e3 ) {
 		{
@@ -1197,13 +1159,13 @@ Reflect.field = function(o,field) {
 				$e = [];
 				while($s.length >= $spos) $e.unshift($s.pop());
 				$s.push($e[0]);
-				{
-					var $tmp = null;
-					$s.pop();
-					return $tmp;
-				}
+				null;
 			}
 		}
+	}
+	{
+		$s.pop();
+		return v;
 	}
 	$s.pop();
 }
@@ -1231,44 +1193,41 @@ Reflect.fields = function(o) {
 		$s.pop();
 		return $tmp;
 	}
-	{
-		var a = new Array();
-		if(o.hasOwnProperty) {
-			
+	var a = new Array();
+	if(o.hasOwnProperty) {
+		
 					for(var i in o)
 						if( o.hasOwnProperty(i) )
 							a.push(i);
 				;
+	}
+	else {
+		var t;
+		try {
+			t = o.__proto__;
 		}
-		else {
-			var t;
-			try {
-				t = o.__proto__;
-			}
-			catch( $e4 ) {
+		catch( $e4 ) {
+			{
+				var e = $e4;
 				{
-					var e = $e4;
-					{
-						$e = [];
-						while($s.length >= $spos) $e.unshift($s.pop());
-						$s.push($e[0]);
-						t = null;
-					}
+					$e = [];
+					while($s.length >= $spos) $e.unshift($s.pop());
+					$s.push($e[0]);
+					t = null;
 				}
 			}
-			if(t != null) o.__proto__ = null;
-			
+		}
+		if(t != null) o.__proto__ = null;
+		
 					for(var i in o)
 						if( i != "__proto__" )
 							a.push(i);
 				;
-			if(t != null) o.__proto__ = t;
-		}
-		{
-			var $tmp = a;
-			$s.pop();
-			return $tmp;
-		}
+		if(t != null) o.__proto__ = t;
+	}
+	{
+		$s.pop();
+		return a;
 	}
 	$s.pop();
 }
@@ -1296,14 +1255,12 @@ Reflect.compareMethods = function(f1,f2) {
 	$s.push("Reflect::compareMethods");
 	var $spos = $s.length;
 	if(f1 == f2) {
-		var $tmp = true;
 		$s.pop();
-		return $tmp;
+		return true;
 	}
 	if(!Reflect.isFunction(f1) || !Reflect.isFunction(f2)) {
-		var $tmp = false;
 		$s.pop();
-		return $tmp;
+		return false;
 	}
 	{
 		var $tmp = f1.scope == f2.scope && f1.method == f2.method && f1.method != null;
@@ -1316,9 +1273,8 @@ Reflect.isObject = function(v) {
 	$s.push("Reflect::isObject");
 	var $spos = $s.length;
 	if(v == null) {
-		var $tmp = false;
 		$s.pop();
-		return $tmp;
+		return false;
 	}
 	var t = typeof(v);
 	{
@@ -1331,37 +1287,32 @@ Reflect.isObject = function(v) {
 Reflect.deleteField = function(o,f) {
 	$s.push("Reflect::deleteField");
 	var $spos = $s.length;
+	if(!Reflect.hasField(o,f)) {
+		$s.pop();
+		return false;
+	}
+	delete(o[f]);
 	{
-		if(!Reflect.hasField(o,f)) {
-			var $tmp = false;
-			$s.pop();
-			return $tmp;
-		}
-		delete(o[f]);
-		{
-			var $tmp = true;
-			$s.pop();
-			return $tmp;
-		}
+		$s.pop();
+		return true;
 	}
 	$s.pop();
 }
 Reflect.copy = function(o) {
 	$s.push("Reflect::copy");
 	var $spos = $s.length;
-	var o2 = Reflect.empty();
+	var o2 = { }
 	{
 		var _g = 0, _g1 = Reflect.fields(o);
 		while(_g < _g1.length) {
 			var f = _g1[_g];
 			++_g;
-			Reflect.setField(o2,f,Reflect.field(o,f));
+			o2[f] = Reflect.field(o,f);
 		}
 	}
 	{
-		var $tmp = o2;
 		$s.pop();
-		return $tmp;
+		return o2;
 	}
 	$s.pop();
 }
@@ -1370,7 +1321,7 @@ Reflect.makeVarArgs = function(f) {
 	var $spos = $s.length;
 	{
 		var $tmp = function() {
-			$s.push("Reflect::makeVarArgs@330");
+			$s.push("Reflect::makeVarArgs@409");
 			var $spos = $s.length;
 			var a = new Array();
 			{
@@ -1646,11 +1597,12 @@ org.puremvc.haxe.core.ControllerTest.prototype.testReregisterAndExecuteCommand =
 	$s.pop();
 }
 org.puremvc.haxe.core.ControllerTest.prototype.__class__ = org.puremvc.haxe.core.ControllerTest;
-haxe.StackItem = { __ename__ : ["haxe","StackItem"], __constructs__ : ["CFunction","Module","FilePos","Method"] }
+haxe.StackItem = { __ename__ : ["haxe","StackItem"], __constructs__ : ["CFunction","Module","FilePos","Method","Lambda"] }
 haxe.StackItem.CFunction = ["CFunction",0];
 haxe.StackItem.CFunction.toString = $estr;
 haxe.StackItem.CFunction.__enum__ = haxe.StackItem;
-haxe.StackItem.FilePos = function(name,line) { var $x = ["FilePos",2,name,line]; $x.__enum__ = haxe.StackItem; $x.toString = $estr; return $x; }
+haxe.StackItem.FilePos = function(s,file,line) { var $x = ["FilePos",2,s,file,line]; $x.__enum__ = haxe.StackItem; $x.toString = $estr; return $x; }
+haxe.StackItem.Lambda = function(v) { var $x = ["Lambda",4,v]; $x.__enum__ = haxe.StackItem; $x.toString = $estr; return $x; }
 haxe.StackItem.Method = function(classname,method) { var $x = ["Method",3,classname,method]; $x.__enum__ = haxe.StackItem; $x.toString = $estr; return $x; }
 haxe.StackItem.Module = function(m) { var $x = ["Module",1,m]; $x.__enum__ = haxe.StackItem; $x.toString = $estr; return $x; }
 haxe.Stack = function() { }
@@ -1684,44 +1636,57 @@ haxe.Stack.toString = function(stack) {
 		while(_g < stack.length) {
 			var s = stack[_g];
 			++_g;
-			var $e = (s);
-			switch( $e[1] ) {
-			case 0:
-			{
-				b.add("Called from a C function\n");
-			}break;
-			case 1:
-			var m = $e[2];
-			{
-				b.add("Called from module ");
-				b.add(m);
-				b.add("\n");
-			}break;
-			case 2:
-			var line = $e[3], name = $e[2];
-			{
-				b.add("Called from ");
-				b.add(name);
-				b.add(" line ");
-				b.add(line);
-				b.add("\n");
-			}break;
-			case 3:
-			var meth = $e[3], cname = $e[2];
-			{
-				b.add("Called from ");
-				b.add(cname);
-				b.add(" method ");
-				b.add(meth);
-				b.add("\n");
-			}break;
-			}
+			b.b += "\nCalled from ";
+			haxe.Stack.itemToString(b,s);
 		}
 	}
 	{
-		var $tmp = b.toString();
+		var $tmp = b.b;
 		$s.pop();
 		return $tmp;
+	}
+	$s.pop();
+}
+haxe.Stack.itemToString = function(b,s) {
+	$s.push("haxe.Stack::itemToString");
+	var $spos = $s.length;
+	var $e = (s);
+	switch( $e[1] ) {
+	case 0:
+	{
+		b.b += "a C function";
+	}break;
+	case 1:
+	var m = $e[2];
+	{
+		b.b += "module ";
+		b.b += m;
+	}break;
+	case 2:
+	var line = $e[4], file = $e[3], s1 = $e[2];
+	{
+		if(s1 != null) {
+			haxe.Stack.itemToString(b,s1);
+			b.b += " (";
+		}
+		b.b += file;
+		b.b += " line ";
+		b.b += line;
+		if(s1 != null) b.b += ")";
+	}break;
+	case 3:
+	var meth = $e[3], cname = $e[2];
+	{
+		b.b += cname;
+		b.b += ".";
+		b.b += meth;
+	}break;
+	case 4:
+	var n = $e[2];
+	{
+		b.b += "local function #";
+		b.b += n;
+	}break;
 	}
 	$s.pop();
 }
@@ -1758,9 +1723,8 @@ haxe.Stack.makeStack = function(s) {
 		}
 	}
 	{
-		var $tmp = m;
 		$s.pop();
-		return $tmp;
+		return m;
 	}
 	$s.pop();
 }
@@ -1882,84 +1846,16 @@ ValueType.TUnknown.toString = $estr;
 ValueType.TUnknown.__enum__ = ValueType;
 Type = function() { }
 Type.__name__ = ["Type"];
-Type.toEnum = function(t) {
-	$s.push("Type::toEnum");
-	var $spos = $s.length;
-	try {
-		if(t.__ename__ == null) {
-			var $tmp = null;
-			$s.pop();
-			return $tmp;
-		}
-		{
-			var $tmp = t;
-			$s.pop();
-			return $tmp;
-		}
-	}
-	catch( $e6 ) {
-		{
-			var e = $e6;
-			{
-				$e = [];
-				while($s.length >= $spos) $e.unshift($s.pop());
-				$s.push($e[0]);
-				null;
-			}
-		}
-	}
-	{
-		var $tmp = null;
-		$s.pop();
-		return $tmp;
-	}
-	$s.pop();
-}
-Type.toClass = function(t) {
-	$s.push("Type::toClass");
-	var $spos = $s.length;
-	try {
-		if(t.__name__ == null) {
-			var $tmp = null;
-			$s.pop();
-			return $tmp;
-		}
-		{
-			var $tmp = t;
-			$s.pop();
-			return $tmp;
-		}
-	}
-	catch( $e7 ) {
-		{
-			var e = $e7;
-			{
-				$e = [];
-				while($s.length >= $spos) $e.unshift($s.pop());
-				$s.push($e[0]);
-				null;
-			}
-		}
-	}
-	{
-		var $tmp = null;
-		$s.pop();
-		return $tmp;
-	}
-	$s.pop();
-}
 Type.getClass = function(o) {
 	$s.push("Type::getClass");
 	var $spos = $s.length;
 	if(o == null) {
-		var $tmp = null;
 		$s.pop();
-		return $tmp;
+		return null;
 	}
 	if(o.__enum__ != null) {
-		var $tmp = null;
 		$s.pop();
-		return $tmp;
+		return null;
 	}
 	{
 		var $tmp = o.__class__;
@@ -1972,9 +1868,8 @@ Type.getEnum = function(o) {
 	$s.push("Type::getEnum");
 	var $spos = $s.length;
 	if(o == null) {
-		var $tmp = null;
 		$s.pop();
-		return $tmp;
+		return null;
 	}
 	{
 		var $tmp = o.__enum__;
@@ -1997,9 +1892,8 @@ Type.getClassName = function(c) {
 	$s.push("Type::getClassName");
 	var $spos = $s.length;
 	if(c == null) {
-		var $tmp = null;
 		$s.pop();
-		return $tmp;
+		return null;
 	}
 	var a = c.__name__;
 	{
@@ -2024,32 +1918,27 @@ Type.resolveClass = function(name) {
 	$s.push("Type::resolveClass");
 	var $spos = $s.length;
 	var cl;
-	{
-		try {
-			cl = eval(name);
-		}
-		catch( $e8 ) {
+	try {
+		cl = eval(name);
+	}
+	catch( $e6 ) {
+		{
+			var e = $e6;
 			{
-				var e = $e8;
-				{
-					$e = [];
-					while($s.length >= $spos) $e.unshift($s.pop());
-					$s.push($e[0]);
-					cl = null;
-				}
+				$e = [];
+				while($s.length >= $spos) $e.unshift($s.pop());
+				$s.push($e[0]);
+				cl = null;
 			}
 		}
-		if(cl == null || cl.__name__ == null) {
-			var $tmp = null;
-			$s.pop();
-			return $tmp;
-		}
-		else null;
+	}
+	if(cl == null || cl.__name__ == null) {
+		$s.pop();
+		return null;
 	}
 	{
-		var $tmp = cl;
 		$s.pop();
-		return $tmp;
+		return cl;
 	}
 	$s.pop();
 }
@@ -2057,41 +1946,41 @@ Type.resolveEnum = function(name) {
 	$s.push("Type::resolveEnum");
 	var $spos = $s.length;
 	var e;
-	{
-		try {
-			e = eval(name);
-		}
-		catch( $e9 ) {
+	try {
+		e = eval(name);
+	}
+	catch( $e7 ) {
+		{
+			var err = $e7;
 			{
-				var e1 = $e9;
-				{
-					$e = [];
-					while($s.length >= $spos) $e.unshift($s.pop());
-					$s.push($e[0]);
-					e1 = null;
-				}
+				$e = [];
+				while($s.length >= $spos) $e.unshift($s.pop());
+				$s.push($e[0]);
+				e = null;
 			}
 		}
-		if(e == null || e.__ename__ == null) {
-			var $tmp = null;
-			$s.pop();
-			return $tmp;
-		}
-		else null;
+	}
+	if(e == null || e.__ename__ == null) {
+		$s.pop();
+		return null;
 	}
 	{
-		var $tmp = e;
 		$s.pop();
-		return $tmp;
+		return e;
 	}
 	$s.pop();
 }
 Type.createInstance = function(cl,args) {
 	$s.push("Type::createInstance");
 	var $spos = $s.length;
-	if(args.length >= 6) throw "Too many arguments";
+	if(args.length <= 3) {
+		var $tmp = new cl(args[0],args[1],args[2]);
+		$s.pop();
+		return $tmp;
+	}
+	if(args.length > 8) throw "Too many arguments";
 	{
-		var $tmp = new cl(args[0],args[1],args[2],args[3],args[4],args[5]);
+		var $tmp = new cl(args[0],args[1],args[2],args[3],args[4],args[5],args[6],args[7]);
 		$s.pop();
 		return $tmp;
 	}
@@ -2107,6 +1996,26 @@ Type.createEmptyInstance = function(cl) {
 	}
 	$s.pop();
 }
+Type.createEnum = function(e,constr,params) {
+	$s.push("Type::createEnum");
+	var $spos = $s.length;
+	var f = Reflect.field(e,constr);
+	if(f == null) throw "No such constructor " + constr;
+	if(Reflect.isFunction(f)) {
+		if(params == null) throw "Constructor " + constr + " need parameters";
+		{
+			var $tmp = f.apply(e,params);
+			$s.pop();
+			return $tmp;
+		}
+	}
+	if(params != null && params.length != 0) throw "Constructor " + constr + " does not need parameters";
+	{
+		$s.pop();
+		return f;
+	}
+	$s.pop();
+}
 Type.getInstanceFields = function(c) {
 	$s.push("Type::getInstanceFields");
 	var $spos = $s.length;
@@ -2118,9 +2027,8 @@ Type.getInstanceFields = function(c) {
 	}
 	while(a.remove("__class__")) null;
 	{
-		var $tmp = a;
 		$s.pop();
-		return $tmp;
+		return a;
 	}
 	$s.pop();
 }
@@ -2133,9 +2041,8 @@ Type.getClassFields = function(c) {
 	a.remove("__super__");
 	a.remove("prototype");
 	{
-		var $tmp = a;
 		$s.pop();
-		return $tmp;
+		return a;
 	}
 	$s.pop();
 }
@@ -2241,36 +2148,31 @@ Type.enumEq = function(a,b) {
 	$s.push("Type::enumEq");
 	var $spos = $s.length;
 	if(a == b) {
-		var $tmp = true;
 		$s.pop();
-		return $tmp;
+		return true;
 	}
 	if(a[0] != b[0]) {
-		var $tmp = false;
 		$s.pop();
-		return $tmp;
+		return false;
 	}
 	{
 		var _g1 = 2, _g = a.length;
 		while(_g1 < _g) {
 			var i = _g1++;
 			if(!Type.enumEq(a[i],b[i])) {
-				var $tmp = false;
 				$s.pop();
-				return $tmp;
+				return false;
 			}
 		}
 	}
 	var e = a.__enum__;
 	if(e != b.__enum__ || e == null) {
-		var $tmp = false;
 		$s.pop();
-		return $tmp;
+		return false;
 	}
 	{
-		var $tmp = true;
 		$s.pop();
-		return $tmp;
+		return true;
 	}
 	$s.pop();
 }
@@ -2332,181 +2234,163 @@ js.Boot.__unhtml = function(s) {
 js.Boot.__trace = function(v,i) {
 	$s.push("js.Boot::__trace");
 	var $spos = $s.length;
-	{
-		var msg = (i != null?i.fileName + ":" + i.lineNumber + ": ":"");
-		msg += js.Boot.__unhtml(js.Boot.__string_rec(v,"")) + "<br/>";
-		var d = document.getElementById("haxe:trace");
-		if(d == null) alert("No haxe:trace element defined\n" + msg);
-		else d.innerHTML += msg;
-	}
+	var msg = (i != null?i.fileName + ":" + i.lineNumber + ": ":"");
+	msg += js.Boot.__unhtml(js.Boot.__string_rec(v,"")) + "<br/>";
+	var d = document.getElementById("haxe:trace");
+	if(d == null) alert("No haxe:trace element defined\n" + msg);
+	else d.innerHTML += msg;
 	$s.pop();
 }
 js.Boot.__clear_trace = function() {
 	$s.push("js.Boot::__clear_trace");
 	var $spos = $s.length;
-	{
-		var d = document.getElementById("haxe:trace");
-		if(d != null) d.innerHTML = "";
-		else null;
-	}
+	var d = document.getElementById("haxe:trace");
+	if(d != null) d.innerHTML = "";
+	else null;
 	$s.pop();
 }
 js.Boot.__closure = function(o,f) {
 	$s.push("js.Boot::__closure");
 	var $spos = $s.length;
-	{
-		var m = o[f];
-		if(m == null) {
-			var $tmp = null;
-			$s.pop();
-			return $tmp;
-		}
-		var f1 = function() {
-			$s.push("js.Boot::__closure@59");
-			var $spos = $s.length;
-			{
-				var $tmp = m.apply(o,arguments);
-				$s.pop();
-				return $tmp;
-			}
-			$s.pop();
-		}
-		f1.scope = o;
-		f1.method = m;
+	var m = o[f];
+	if(m == null) {
+		$s.pop();
+		return null;
+	}
+	var f1 = function() {
+		$s.push("js.Boot::__closure@67");
+		var $spos = $s.length;
 		{
-			var $tmp = f1;
+			var $tmp = m.apply(o,arguments);
 			$s.pop();
 			return $tmp;
 		}
+		$s.pop();
+	}
+	f1.scope = o;
+	f1.method = m;
+	{
+		$s.pop();
+		return f1;
 	}
 	$s.pop();
 }
 js.Boot.__string_rec = function(o,s) {
 	$s.push("js.Boot::__string_rec");
 	var $spos = $s.length;
-	{
-		if(o == null) {
-			var $tmp = "null";
-			$s.pop();
-			return $tmp;
-		}
-		if(s.length >= 5) {
-			var $tmp = "<...>";
-			$s.pop();
-			return $tmp;
-		}
-		var t = typeof(o);
-		if(t == "function" && (o.__name__ != null || o.__ename__ != null)) t = "object";
-		switch(t) {
-		case "object":{
-			if(o instanceof Array) {
-				if(o.__enum__ != null) {
-					if(o.length == 2) {
-						var $tmp = o[0];
-						$s.pop();
-						return $tmp;
-					}
-					var str = o[0] + "(";
-					s += "\t";
-					{
-						var _g1 = 2, _g = o.length;
-						while(_g1 < _g) {
-							var i = _g1++;
-							if(i != 2) str += "," + js.Boot.__string_rec(o[i],s);
-							else str += js.Boot.__string_rec(o[i],s);
-						}
-					}
-					{
-						var $tmp = str + ")";
-						$s.pop();
-						return $tmp;
-					}
+	if(o == null) {
+		$s.pop();
+		return "null";
+	}
+	if(s.length >= 5) {
+		$s.pop();
+		return "<...>";
+	}
+	var t = typeof(o);
+	if(t == "function" && (o.__name__ != null || o.__ename__ != null)) t = "object";
+	switch(t) {
+	case "object":{
+		if(o instanceof Array) {
+			if(o.__enum__ != null) {
+				if(o.length == 2) {
+					var $tmp = o[0];
+					$s.pop();
+					return $tmp;
 				}
-				var l = o.length;
-				var i;
-				var str = "[";
+				var str = o[0] + "(";
 				s += "\t";
 				{
-					var _g = 0;
-					while(_g < l) {
-						var i1 = _g++;
-						str += ((i1 > 0?",":"")) + js.Boot.__string_rec(o[i1],s);
+					var _g1 = 2, _g = o.length;
+					while(_g1 < _g) {
+						var i = _g1++;
+						if(i != 2) str += "," + js.Boot.__string_rec(o[i],s);
+						else str += js.Boot.__string_rec(o[i],s);
 					}
 				}
-				str += "]";
 				{
-					var $tmp = str;
+					var $tmp = str + ")";
 					$s.pop();
 					return $tmp;
 				}
 			}
-			var tostr;
-			try {
-				tostr = o.toString;
-			}
-			catch( $e10 ) {
-				{
-					var e = $e10;
-					{
-						$e = [];
-						while($s.length >= $spos) $e.unshift($s.pop());
-						$s.push($e[0]);
-						{
-							var $tmp = "???";
-							$s.pop();
-							return $tmp;
-						}
-					}
-				}
-			}
-			if(tostr != null && tostr != Object.toString) {
-				var s2 = o.toString();
-				if(s2 != "[object Object]") {
-					var $tmp = s2;
-					$s.pop();
-					return $tmp;
-				}
-			}
-			var k;
-			var str = "{\n";
+			var l = o.length;
+			var i;
+			var str = "[";
 			s += "\t";
-			var hasp = (o.hasOwnProperty != null);
-			for( var k in o ) { ;
-			if(hasp && !o.hasOwnProperty(k)) continue;
-			if(k == "prototype" || k == "__class__" || k == "__super__" || k == "__interfaces__") continue;
-			if(str.length != 2) str += ", \n";
-			str += s + k + " : " + js.Boot.__string_rec(o[k],s);
-			}
-			s = s.substring(1);
-			str += "\n" + s + "}";
 			{
-				var $tmp = str;
-				$s.pop();
-				return $tmp;
+				var _g = 0;
+				while(_g < l) {
+					var i1 = _g++;
+					str += ((i1 > 0?",":"")) + js.Boot.__string_rec(o[i1],s);
+				}
 			}
-		}break;
-		case "function":{
+			str += "]";
 			{
-				var $tmp = "<function>";
 				$s.pop();
-				return $tmp;
+				return str;
 			}
-		}break;
-		case "string":{
-			{
-				var $tmp = o;
-				$s.pop();
-				return $tmp;
-			}
-		}break;
-		default:{
-			{
-				var $tmp = String(o);
-				$s.pop();
-				return $tmp;
-			}
-		}break;
 		}
+		var tostr;
+		try {
+			tostr = o.toString;
+		}
+		catch( $e8 ) {
+			{
+				var e = $e8;
+				{
+					$e = [];
+					while($s.length >= $spos) $e.unshift($s.pop());
+					$s.push($e[0]);
+					{
+						$s.pop();
+						return "???";
+					}
+				}
+			}
+		}
+		if(tostr != null && tostr != Object.toString) {
+			var s2 = o.toString();
+			if(s2 != "[object Object]") {
+				$s.pop();
+				return s2;
+			}
+		}
+		var k = null;
+		var str = "{\n";
+		s += "\t";
+		var hasp = (o.hasOwnProperty != null);
+		for( var k in o ) { ;
+		if(hasp && !o.hasOwnProperty(k)) continue;
+		if(k == "prototype" || k == "__class__" || k == "__super__" || k == "__interfaces__") continue;
+		if(str.length != 2) str += ", \n";
+		str += s + k + " : " + js.Boot.__string_rec(o[k],s);
+		}
+		s = s.substring(1);
+		str += "\n" + s + "}";
+		{
+			$s.pop();
+			return str;
+		}
+	}break;
+	case "function":{
+		{
+			$s.pop();
+			return "<function>";
+		}
+	}break;
+	case "string":{
+		{
+			$s.pop();
+			return o;
+		}
+	}break;
+	default:{
+		{
+			var $tmp = String(o);
+			$s.pop();
+			return $tmp;
+		}
+	}break;
 	}
 	$s.pop();
 }
@@ -2514,14 +2398,12 @@ js.Boot.__interfLoop = function(cc,cl) {
 	$s.push("js.Boot::__interfLoop");
 	var $spos = $s.length;
 	if(cc == null) {
-		var $tmp = false;
 		$s.pop();
-		return $tmp;
+		return false;
 	}
 	if(cc == cl) {
-		var $tmp = true;
 		$s.pop();
-		return $tmp;
+		return true;
 	}
 	var intf = cc.__interfaces__;
 	if(intf != null) {
@@ -2530,9 +2412,8 @@ js.Boot.__interfLoop = function(cc,cl) {
 			var i = _g1++;
 			var i1 = intf[i];
 			if(i1 == cl || js.Boot.__interfLoop(i1,cl)) {
-				var $tmp = true;
 				$s.pop();
-				return $tmp;
+				return true;
 			}
 		}
 	}
@@ -2546,210 +2427,187 @@ js.Boot.__interfLoop = function(cc,cl) {
 js.Boot.__instanceof = function(o,cl) {
 	$s.push("js.Boot::__instanceof");
 	var $spos = $s.length;
-	{
-		try {
-			if(o instanceof cl) {
-				if(cl == Array) {
-					var $tmp = (o.__enum__ == null);
+	try {
+		if(o instanceof cl) {
+			if(cl == Array) {
+				var $tmp = (o.__enum__ == null);
+				$s.pop();
+				return $tmp;
+			}
+			{
+				$s.pop();
+				return true;
+			}
+		}
+		if(js.Boot.__interfLoop(o.__class__,cl)) {
+			$s.pop();
+			return true;
+		}
+	}
+	catch( $e9 ) {
+		{
+			var e = $e9;
+			{
+				$e = [];
+				while($s.length >= $spos) $e.unshift($s.pop());
+				$s.push($e[0]);
+				if(cl == null) {
 					$s.pop();
-					return $tmp;
-				}
-				{
-					var $tmp = true;
-					$s.pop();
-					return $tmp;
-				}
-			}
-			if(js.Boot.__interfLoop(o.__class__,cl)) {
-				var $tmp = true;
-				$s.pop();
-				return $tmp;
-			}
-		}
-		catch( $e11 ) {
-			{
-				var e = $e11;
-				{
-					$e = [];
-					while($s.length >= $spos) $e.unshift($s.pop());
-					$s.push($e[0]);
-					if(cl == null) {
-						var $tmp = false;
-						$s.pop();
-						return $tmp;
-					}
+					return false;
 				}
 			}
 		}
-		switch(cl) {
-		case Int:{
-			{
-				var $tmp = (Math.ceil(o) === o) && isFinite(o);
-				$s.pop();
-				return $tmp;
-			}
-		}break;
-		case Float:{
-			{
-				var $tmp = typeof(o) == "number";
-				$s.pop();
-				return $tmp;
-			}
-		}break;
-		case Bool:{
-			{
-				var $tmp = (o === true || o === false);
-				$s.pop();
-				return $tmp;
-			}
-		}break;
-		case String:{
-			{
-				var $tmp = typeof(o) == "string";
-				$s.pop();
-				return $tmp;
-			}
-		}break;
-		case Dynamic:{
-			{
-				var $tmp = true;
-				$s.pop();
-				return $tmp;
-			}
-		}break;
-		default:{
-			if(o != null && o.__enum__ == cl) {
-				var $tmp = true;
-				$s.pop();
-				return $tmp;
-			}
-			{
-				var $tmp = false;
-				$s.pop();
-				return $tmp;
-			}
-		}break;
+	}
+	switch(cl) {
+	case Int:{
+		{
+			var $tmp = Math.ceil(o) === o && isFinite(o);
+			$s.pop();
+			return $tmp;
 		}
+	}break;
+	case Float:{
+		{
+			var $tmp = typeof(o) == "number";
+			$s.pop();
+			return $tmp;
+		}
+	}break;
+	case Bool:{
+		{
+			var $tmp = o === true || o === false;
+			$s.pop();
+			return $tmp;
+		}
+	}break;
+	case String:{
+		{
+			var $tmp = typeof(o) == "string";
+			$s.pop();
+			return $tmp;
+		}
+	}break;
+	case Dynamic:{
+		{
+			$s.pop();
+			return true;
+		}
+	}break;
+	default:{
+		if(o == null) {
+			$s.pop();
+			return false;
+		}
+		{
+			var $tmp = o.__enum__ == cl || (cl == Class && o.__name__ != null) || (cl == Enum && o.__ename__ != null);
+			$s.pop();
+			return $tmp;
+		}
+	}break;
 	}
 	$s.pop();
 }
 js.Boot.__init = function() {
 	$s.push("js.Boot::__init");
 	var $spos = $s.length;
-	{
-		js.Lib.isIE = (document.all != null && window.opera == null);
-		js.Lib.isOpera = (window.opera != null);
-		Array.prototype.copy = Array.prototype.slice;
-		Array.prototype.insert = function(i,x) {
-			$s.push("js.Boot::__init@191");
-			var $spos = $s.length;
-			this.splice(i,0,x);
-			$s.pop();
-		}
-		Array.prototype.remove = function(obj) {
-			$s.push("js.Boot::__init@194");
-			var $spos = $s.length;
-			var i = 0;
-			var l = this.length;
-			while(i < l) {
-				if(this[i] == obj) {
-					this.splice(i,1);
-					{
-						var $tmp = true;
-						$s.pop();
-						return $tmp;
-					}
-				}
-				i++;
-			}
-			{
-				var $tmp = false;
-				$s.pop();
-				return $tmp;
-			}
-			$s.pop();
-		}
-		Array.prototype.iterator = function() {
-			$s.push("js.Boot::__init@206");
-			var $spos = $s.length;
-			{
-				var $tmp = { cur : 0, arr : this, hasNext : function() {
-					$s.push("js.Boot::__init@206@210");
-					var $spos = $s.length;
-					{
-						var $tmp = this.cur < this.arr.length;
-						$s.pop();
-						return $tmp;
-					}
-					$s.pop();
-				}, next : function() {
-					$s.push("js.Boot::__init@206@213");
-					var $spos = $s.length;
-					{
-						var $tmp = this.arr[this.cur++];
-						$s.pop();
-						return $tmp;
-					}
-					$s.pop();
-				}}
-				$s.pop();
-				return $tmp;
-			}
-			$s.pop();
-		}
-		String.prototype.__class__ = String;
-		String.__name__ = ["String"];
-		Array.prototype.__class__ = Array;
-		Array.__name__ = ["Array"];
-		var cca = String.prototype.charCodeAt;
-		String.prototype.charCodeAt = function(i) {
-			$s.push("js.Boot::__init@223");
-			var $spos = $s.length;
-			var x = cca.call(this,i);
-			if(isNaN(x)) {
-				var $tmp = null;
-				$s.pop();
-				return $tmp;
-			}
-			{
-				var $tmp = x;
-				$s.pop();
-				return $tmp;
-			}
-			$s.pop();
-		}
-		var oldsub = String.prototype.substr;
-		String.prototype.substr = function(pos,len) {
-			$s.push("js.Boot::__init@230");
-			var $spos = $s.length;
-			if(pos != null && pos != 0 && len != null && len < 0) {
-				var $tmp = "";
-				$s.pop();
-				return $tmp;
-			}
-			if(len == null) len = this.length;
-			if(pos < 0) {
-				pos = this.length + pos;
-				if(pos < 0) pos = 0;
-			}
-			else if(len < 0) {
-				len = this.length + len - pos;
-			}
-			{
-				var $tmp = oldsub.apply(this,[pos,len]);
-				$s.pop();
-				return $tmp;
-			}
-			$s.pop();
-		}
-		Int = new Object();
-		Dynamic = new Object();
-		Float = Number;
-		Bool = new Object();
-		Bool["true"] = true;
-		Bool["false"] = false;
-		$closure = js.Boot.__closure;
+	js.Lib.isIE = (document.all != null && window.opera == null);
+	js.Lib.isOpera = (window.opera != null);
+	Array.prototype.copy = Array.prototype.slice;
+	Array.prototype.insert = function(i,x) {
+		$s.push("js.Boot::__init@199");
+		var $spos = $s.length;
+		this.splice(i,0,x);
+		$s.pop();
 	}
+	Array.prototype.remove = function(obj) {
+		$s.push("js.Boot::__init@202");
+		var $spos = $s.length;
+		var i = 0;
+		var l = this.length;
+		while(i < l) {
+			if(this[i] == obj) {
+				this.splice(i,1);
+				{
+					$s.pop();
+					return true;
+				}
+			}
+			i++;
+		}
+		{
+			$s.pop();
+			return false;
+		}
+		$s.pop();
+	}
+	Array.prototype.iterator = function() {
+		$s.push("js.Boot::__init@214");
+		var $spos = $s.length;
+		{
+			var $tmp = { cur : 0, arr : this, hasNext : function() {
+				$s.push("js.Boot::__init@214@218");
+				var $spos = $s.length;
+				{
+					var $tmp = this.cur < this.arr.length;
+					$s.pop();
+					return $tmp;
+				}
+				$s.pop();
+			}, next : function() {
+				$s.push("js.Boot::__init@214@221");
+				var $spos = $s.length;
+				{
+					var $tmp = this.arr[this.cur++];
+					$s.pop();
+					return $tmp;
+				}
+				$s.pop();
+			}}
+			$s.pop();
+			return $tmp;
+		}
+		$s.pop();
+	}
+	var cca = String.prototype.charCodeAt;
+	String.prototype.cca = cca;
+	String.prototype.charCodeAt = function(i) {
+		$s.push("js.Boot::__init@228");
+		var $spos = $s.length;
+		var x = cca.call(this,i);
+		if(isNaN(x)) {
+			$s.pop();
+			return null;
+		}
+		{
+			$s.pop();
+			return x;
+		}
+		$s.pop();
+	}
+	var oldsub = String.prototype.substr;
+	String.prototype.substr = function(pos,len) {
+		$s.push("js.Boot::__init@235");
+		var $spos = $s.length;
+		if(pos != null && pos != 0 && len != null && len < 0) {
+			$s.pop();
+			return "";
+		}
+		if(len == null) len = this.length;
+		if(pos < 0) {
+			pos = this.length + pos;
+			if(pos < 0) pos = 0;
+		}
+		else if(len < 0) {
+			len = this.length + len - pos;
+		}
+		{
+			var $tmp = oldsub.apply(this,[pos,len]);
+			$s.pop();
+			return $tmp;
+		}
+		$s.pop();
+	}
+	$closure = js.Boot.__closure;
 	$s.pop();
 }
 js.Boot.prototype.__class__ = js.Boot;
@@ -2894,7 +2752,7 @@ org.puremvc.haxe.patterns.observer.Observer.prototype.compareNotifyContext = fun
 	$s.push("org.puremvc.haxe.patterns.observer.Observer::compareNotifyContext");
 	var $spos = $s.length;
 	{
-		var $tmp = object === this.context;
+		var $tmp = object == this.context;
 		$s.pop();
 		return $tmp;
 	}
@@ -3170,8 +3028,8 @@ org.puremvc.haxe.core.View.prototype.notifyObservers = function(notification) {
 	var $spos = $s.length;
 	if(this.observerMap.exists(notification.getName())) {
 		var iterator = this.observerMap.get(notification.getName()).iterator();
-		{ var $it12 = iterator;
-		while( $it12.hasNext() ) { var observer = $it12.next();
+		{ var $it10 = iterator;
+		while( $it10.hasNext() ) { var observer = $it10.next();
 		observer.notifyObserver(notification);
 		}}
 	}
@@ -3220,9 +3078,8 @@ org.puremvc.haxe.core.View.prototype.removeMediator = function(mediatorName) {
 		mediator.onRemove();
 	}
 	{
-		var $tmp = mediator;
 		$s.pop();
-		return $tmp;
+		return mediator;
 	}
 	$s.pop();
 }
@@ -3230,8 +3087,8 @@ org.puremvc.haxe.core.View.prototype.removeObserver = function(notificationName,
 	$s.push("org.puremvc.haxe.core.View::removeObserver");
 	var $spos = $s.length;
 	var observers = this.observerMap.get(notificationName);
-	{ var $it13 = observers.iterator();
-	while( $it13.hasNext() ) { var observer = $it13.next();
+	{ var $it11 = observers.iterator();
+	while( $it11.hasNext() ) { var observer = $it11.next();
 	{
 		if(observer.compareNotifyContext(notifyContext) == true) {
 			observers.remove(observer);
@@ -3259,14 +3116,12 @@ org.puremvc.haxe.core.View.__interfaces__ = [org.puremvc.haxe.interfaces.IView];
 Hash = function(p) { if( p === $_ ) return; {
 	$s.push("Hash::new");
 	var $spos = $s.length;
-	{
-		this.h = {}
-		if(this.h.__proto__ != null) {
-			this.h.__proto__ = null;
-			delete(this.h.__proto__);
-		}
-		else null;
+	this.h = {}
+	if(this.h.__proto__ != null) {
+		this.h.__proto__ = null;
+		delete(this.h.__proto__);
 	}
+	else null;
 	$s.pop();
 }}
 Hash.__name__ = ["Hash"];
@@ -3281,9 +3136,9 @@ Hash.prototype.exists = function(key) {
 			return $tmp;
 		}
 	}
-	catch( $e14 ) {
+	catch( $e12 ) {
 		{
-			var e = $e14;
+			var e = $e12;
 			{
 				$e = [];
 				while($s.length >= $spos) $e.unshift($s.pop());
@@ -3293,9 +3148,8 @@ Hash.prototype.exists = function(key) {
 					if( i == key ) return true;
 			;
 				{
-					var $tmp = false;
 					$s.pop();
-					return $tmp;
+					return false;
 				}
 			}
 		}
@@ -3318,7 +3172,7 @@ Hash.prototype.iterator = function() {
 	var $spos = $s.length;
 	{
 		var $tmp = { ref : this.h, it : this.keys(), hasNext : function() {
-			$s.push("Hash::iterator@181");
+			$s.push("Hash::iterator@198");
 			var $spos = $s.length;
 			{
 				var $tmp = this.it.hasNext();
@@ -3327,7 +3181,7 @@ Hash.prototype.iterator = function() {
 			}
 			$s.pop();
 		}, next : function() {
-			$s.push("Hash::iterator@182");
+			$s.push("Hash::iterator@199");
 			var $spos = $s.length;
 			var i = this.it.next();
 			{
@@ -3361,15 +3215,13 @@ Hash.prototype.remove = function(key) {
 	$s.push("Hash::remove");
 	var $spos = $s.length;
 	if(!this.exists(key)) {
-		var $tmp = false;
 		$s.pop();
-		return $tmp;
+		return false;
 	}
 	delete(this.h["$" + key]);
 	{
-		var $tmp = true;
 		$s.pop();
-		return $tmp;
+		return true;
 	}
 	$s.pop();
 }
@@ -3383,20 +3235,20 @@ Hash.prototype.toString = function() {
 	$s.push("Hash::toString");
 	var $spos = $s.length;
 	var s = new StringBuf();
-	s.add("{");
+	s.b += "{";
 	var it = this.keys();
-	{ var $it15 = it;
-	while( $it15.hasNext() ) { var i = $it15.next();
+	{ var $it13 = it;
+	while( $it13.hasNext() ) { var i = $it13.next();
 	{
-		s.add(i);
-		s.add(" => ");
-		s.add(Std.string(this.get(i)));
-		if(it.hasNext()) s.add(", ");
+		s.b += i;
+		s.b += " => ";
+		s.b += Std.string(this.get(i));
+		if(it.hasNext()) s.b += ", ";
 	}
 	}}
-	s.add("}");
+	s.b += "}";
 	{
-		var $tmp = s.toString();
+		var $tmp = s.b;
 		$s.pop();
 		return $tmp;
 	}
@@ -3440,31 +3292,17 @@ Std["int"] = function(x) {
 	}
 	$s.pop();
 }
-Std.bool = function(x) {
-	$s.push("Std::bool");
-	var $spos = $s.length;
-	{
-		var $tmp = (x !== 0 && x != null && x !== false);
-		$s.pop();
-		return $tmp;
-	}
-	$s.pop();
-}
 Std.parseInt = function(x) {
 	$s.push("Std::parseInt");
 	var $spos = $s.length;
+	var v = parseInt(x);
+	if(Math.isNaN(v)) {
+		$s.pop();
+		return null;
+	}
 	{
-		var v = parseInt(x);
-		if(Math.isNaN(v)) {
-			var $tmp = null;
-			$s.pop();
-			return $tmp;
-		}
-		{
-			var $tmp = v;
-			$s.pop();
-			return $tmp;
-		}
+		$s.pop();
+		return v;
 	}
 	$s.pop();
 }
@@ -3478,46 +3316,11 @@ Std.parseFloat = function(x) {
 	}
 	$s.pop();
 }
-Std.chr = function(x) {
-	$s.push("Std::chr");
-	var $spos = $s.length;
-	{
-		var $tmp = String.fromCharCode(x);
-		$s.pop();
-		return $tmp;
-	}
-	$s.pop();
-}
-Std.ord = function(x) {
-	$s.push("Std::ord");
-	var $spos = $s.length;
-	if(x == "") {
-		var $tmp = null;
-		$s.pop();
-		return $tmp;
-	}
-	else {
-		var $tmp = x.charCodeAt(0);
-		$s.pop();
-		return $tmp;
-	}
-	$s.pop();
-}
 Std.random = function(x) {
 	$s.push("Std::random");
 	var $spos = $s.length;
 	{
 		var $tmp = Math.floor(Math.random() * x);
-		$s.pop();
-		return $tmp;
-	}
-	$s.pop();
-}
-Std.resource = function(name) {
-	$s.push("Std::resource");
-	var $spos = $s.length;
-	{
-		var $tmp = js.Boot.__res[name];
 		$s.pop();
 		return $tmp;
 	}
@@ -3561,7 +3364,7 @@ org.puremvc.haxe.patterns.observer.ObserverTest.prototype.testCompareNotifyConte
 	$s.push("org.puremvc.haxe.patterns.observer.ObserverTest::testCompareNotifyContext");
 	var $spos = $s.length;
 	var observer = new org.puremvc.haxe.patterns.observer.Observer($closure(this,"observerTestMethod"),this);
-	var negTestObj;
+	var negTestObj = null;
 	this.assertFalse(observer.compareNotifyContext(negTestObj),{ fileName : "ObserverTest.hx", lineNumber : 88, className : "org.puremvc.haxe.patterns.observer.ObserverTest", methodName : "testCompareNotifyContext"});
 	this.assertTrue(observer.compareNotifyContext(this),{ fileName : "ObserverTest.hx", lineNumber : 89, className : "org.puremvc.haxe.patterns.observer.ObserverTest", methodName : "testCompareNotifyContext"});
 	$s.pop();
@@ -3745,7 +3548,10 @@ org.puremvc.haxe.patterns.facade.Facade.prototype.hasProxy = function(proxyName)
 org.puremvc.haxe.patterns.facade.Facade.prototype.initializeController = function() {
 	$s.push("org.puremvc.haxe.patterns.facade.Facade::initializeController");
 	var $spos = $s.length;
-	if(this.controller != null) return;
+	if(this.controller != null) {
+		$s.pop();
+		return;
+	}
 	this.controller = org.puremvc.haxe.core.Controller.getInstance();
 	$s.pop();
 }
@@ -3760,14 +3566,20 @@ org.puremvc.haxe.patterns.facade.Facade.prototype.initializeFacade = function() 
 org.puremvc.haxe.patterns.facade.Facade.prototype.initializeModel = function() {
 	$s.push("org.puremvc.haxe.patterns.facade.Facade::initializeModel");
 	var $spos = $s.length;
-	if(this.model != null) return;
+	if(this.model != null) {
+		$s.pop();
+		return;
+	}
 	this.model = org.puremvc.haxe.core.Model.getInstance();
 	$s.pop();
 }
 org.puremvc.haxe.patterns.facade.Facade.prototype.initializeView = function() {
 	$s.push("org.puremvc.haxe.patterns.facade.Facade::initializeView");
 	var $spos = $s.length;
-	if(this.view != null) return;
+	if(this.view != null) {
+		$s.pop();
+		return;
+	}
 	this.view = org.puremvc.haxe.core.View.getInstance();
 	$s.pop();
 }
@@ -3805,24 +3617,22 @@ org.puremvc.haxe.patterns.facade.Facade.prototype.removeCommand = function(notif
 org.puremvc.haxe.patterns.facade.Facade.prototype.removeMediator = function(mediatorName) {
 	$s.push("org.puremvc.haxe.patterns.facade.Facade::removeMediator");
 	var $spos = $s.length;
-	var mediator;
+	var mediator = null;
 	if(this.view != null) mediator = this.view.removeMediator(mediatorName);
 	{
-		var $tmp = mediator;
 		$s.pop();
-		return $tmp;
+		return mediator;
 	}
 	$s.pop();
 }
 org.puremvc.haxe.patterns.facade.Facade.prototype.removeProxy = function(proxyName) {
 	$s.push("org.puremvc.haxe.patterns.facade.Facade::removeProxy");
 	var $spos = $s.length;
-	var proxy;
+	var proxy = null;
 	if(this.model != null) proxy = this.model.removeProxy(proxyName);
 	{
-		var $tmp = proxy;
 		$s.pop();
-		return $tmp;
+		return proxy;
 	}
 	$s.pop();
 }
@@ -3935,50 +3745,50 @@ haxe.unit.TestResult.prototype.toString = function() {
 	var $spos = $s.length;
 	var buf = new StringBuf();
 	var failures = 0;
-	{ var $it16 = this.m_tests.iterator();
-	while( $it16.hasNext() ) { var test = $it16.next();
+	{ var $it14 = this.m_tests.iterator();
+	while( $it14.hasNext() ) { var test = $it14.next();
 	{
 		if(test.success == false) {
-			buf.add("* ");
-			buf.add(test.classname);
-			buf.add("::");
-			buf.add(test.method);
-			buf.add("()");
-			buf.add("\n");
-			buf.add("ERR: ");
+			buf.b += "* ";
+			buf.b += test.classname;
+			buf.b += "::";
+			buf.b += test.method;
+			buf.b += "()";
+			buf.b += "\n";
+			buf.b += "ERR: ";
 			if(test.posInfos != null) {
-				buf.add(test.posInfos.fileName);
-				buf.add(":");
-				buf.add(test.posInfos.lineNumber);
-				buf.add("(");
-				buf.add(test.posInfos.className);
-				buf.add(".");
-				buf.add(test.posInfos.methodName);
-				buf.add(") - ");
+				buf.b += test.posInfos.fileName;
+				buf.b += ":";
+				buf.b += test.posInfos.lineNumber;
+				buf.b += "(";
+				buf.b += test.posInfos.className;
+				buf.b += ".";
+				buf.b += test.posInfos.methodName;
+				buf.b += ") - ";
 			}
-			buf.add(test.error);
-			buf.add("\n");
+			buf.b += test.error;
+			buf.b += "\n";
 			if(test.backtrace != null) {
-				buf.add(test.backtrace);
-				buf.add("\n");
+				buf.b += test.backtrace;
+				buf.b += "\n";
 			}
-			buf.add("\n");
+			buf.b += "\n";
 			failures++;
 		}
 	}
 	}}
-	buf.add("\n");
-	if(failures == 0) buf.add("OK ");
-	else buf.add("FAILED ");
-	buf.add(this.m_tests.length);
-	buf.add(" tests, ");
-	buf.add(failures);
-	buf.add(" failed, ");
-	buf.add((this.m_tests.length - failures));
-	buf.add(" success");
-	buf.add("\n");
+	buf.b += "\n";
+	if(failures == 0) buf.b += "OK ";
+	else buf.b += "FAILED ";
+	buf.b += this.m_tests.length;
+	buf.b += " tests, ";
+	buf.b += failures;
+	buf.b += " failed, ";
+	buf.b += (this.m_tests.length - failures);
+	buf.b += " success";
+	buf.b += "\n";
 	{
-		var $tmp = buf.toString();
+		var $tmp = buf.b;
 		$s.pop();
 		return $tmp;
 	}
@@ -4111,9 +3921,8 @@ StringTools.ltrim = function(s) {
 		return $tmp;
 	}
 	else {
-		var $tmp = s;
 		$s.pop();
-		return $tmp;
+		return s;
 	}
 	$s.pop();
 }
@@ -4134,9 +3943,8 @@ StringTools.rtrim = function(s) {
 	}
 	else {
 		{
-			var $tmp = s;
 			$s.pop();
-			return $tmp;
+			return s;
 		}
 	}
 	$s.pop();
@@ -4167,9 +3975,8 @@ StringTools.rpad = function(s,c,l) {
 		}
 	}
 	{
-		var $tmp = s;
 		$s.pop();
-		return $tmp;
+		return s;
 	}
 	$s.pop();
 }
@@ -4179,9 +3986,8 @@ StringTools.lpad = function(s,c,l) {
 	var ns = "";
 	var sl = s.length;
 	if(sl >= l) {
-		var $tmp = s;
 		$s.pop();
-		return $tmp;
+		return s;
 	}
 	var cl = c.length;
 	while(sl < l) {
@@ -4233,10 +4039,10 @@ StringTools.baseEncode = function(s,base) {
 			buf |= t;
 		}
 		curbits -= nbits;
-		out.addChar(base.charCodeAt((buf >> curbits) & mask));
+		out.b += String.fromCharCode(base.charCodeAt((buf >> curbits) & mask));
 	}
 	{
-		var $tmp = out.toString();
+		var $tmp = out.b;
 		$s.pop();
 		return $tmp;
 	}
@@ -4279,10 +4085,10 @@ StringTools.baseDecode = function(s,base) {
 			buf |= i;
 		}
 		curbits -= 8;
-		out.addChar((buf >> curbits) & 255);
+		out.b += String.fromCharCode((buf >> curbits) & 255);
 	}
 	{
-		var $tmp = out.toString();
+		var $tmp = out.b;
 		$s.pop();
 		return $tmp;
 	}
@@ -4301,9 +4107,8 @@ StringTools.hex = function(n,digits) {
 	if(digits != null) while(s.length < digits) s = "0" + s;
 	if(neg) s = "-" + s;
 	{
-		var $tmp = s;
 		$s.pop();
-		return $tmp;
+		return s;
 	}
 	$s.pop();
 }
@@ -4321,7 +4126,7 @@ js.Boot.__init();
 	Math.NEGATIVE_INFINITY = Number["NEGATIVE_INFINITY"];
 	Math.POSITIVE_INFINITY = Number["POSITIVE_INFINITY"];
 	Math.isFinite = function(i) {
-		$s.push("@Main::new@71");
+		$s.push("@Main::new@74");
 		var $spos = $s.length;
 		{
 			var $tmp = isFinite(i);
@@ -4331,7 +4136,7 @@ js.Boot.__init();
 		$s.pop();
 	}
 	Math.isNaN = function(i) {
-		$s.push("@Main::new@83");
+		$s.push("@Main::new@86");
 		var $spos = $s.length;
 		{
 			var $tmp = isNaN(i);
@@ -4340,24 +4145,37 @@ js.Boot.__init();
 		}
 		$s.pop();
 	}
+	Math.__name__ = ["Math"];
 }
 {
-	
-			onerror = function(msg,url,line) {
-				var stack = $s.copy();
-				var f = js.Lib.onerror;
-				$s.splice(0,$s.length);
-				if( f == null ) {
-					var i = stack.length;
-					var s = "";
-					while( --i >= 0 )
-						s += "Called from "+stack[i]+"\n";
-					alert(msg+"\n\n"+s);
-					return false;
-				}
-				return f(msg,stack);
-			}
-		;
+	String.prototype.__class__ = String;
+	String.__name__ = ["String"];
+	Array.prototype.__class__ = Array;
+	Array.__name__ = ["Array"];
+	Int = { __name__ : ["Int"]}
+	Dynamic = { __name__ : ["Dynamic"]}
+	Float = Number;
+	Float.__name__ = ["Float"];
+	Bool = { __ename__ : ["Bool"]}
+	Class = { __name__ : ["Class"]}
+	Enum = { }
+	Void = { __ename__ : ["Void"]}
+}
+{
+	onerror = function(msg,url,line) {
+		var stack = $s.copy();
+		var f = js.Lib.onerror;
+		$s.splice(0,$s.length);
+		if( f == null ) {
+			var i = stack.length;
+			var s = "";
+			while( --i >= 0 )
+				s += "Called from "+stack[i]+"\n";
+			alert(msg+"\n\n"+s);
+			return false;
+		}
+		return f(msg,stack);
+	}
 }
 org.puremvc.haxe.patterns.mediator.Mediator.NAME = "Mediator";
 org.puremvc.haxe.patterns.proxy.Proxy.NAME = "Proxy";

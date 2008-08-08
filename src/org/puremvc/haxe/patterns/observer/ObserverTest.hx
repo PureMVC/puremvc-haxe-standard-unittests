@@ -82,7 +82,7 @@ class ObserverTest extends haxe.unit.TestCase
 		// Create observer passing in notification method and context
 		var observer:Observer = new Observer( observerTestMethod, this );
   			
-		var negTestObj: Dynamic;
+		var negTestObj: Dynamic = null;
 
 		// test assertions  			
 		assertFalse( observer.compareNotifyContext( negTestObj ) );

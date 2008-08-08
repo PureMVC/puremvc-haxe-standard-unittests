@@ -63,9 +63,9 @@ class NotificationTest extends haxe.unit.TestCase
 
 		#if neko
 		var ts: String = "Notification Name: TestNote\nBody:[1, 3, 5]\nType:TestType";
-		#else flash
+		#elseif flash
 		var ts: String = "Notification Name: TestNote\nBody:1,3,5\nType:TestType";
-		#else js
+		#elseif js
 		var ts: String = "Notification Name: TestNote\nBody:1,3,5\nType:TestType";
 		#end
 		
