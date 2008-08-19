@@ -1043,6 +1043,42 @@ org.puremvc.haxe.core.ViewTestMediator2.prototype.listNotificationInterests = fu
 	$s.pop();
 }
 org.puremvc.haxe.core.ViewTestMediator2.prototype.__class__ = org.puremvc.haxe.core.ViewTestMediator2;
+org.puremvc.haxe.core.ViewTestMediator5 = function(view) { if( view === $_ ) return; {
+	$s.push("org.puremvc.haxe.core.ViewTestMediator5::new");
+	var $spos = $s.length;
+	org.puremvc.haxe.patterns.mediator.Mediator.apply(this,[org.puremvc.haxe.core.ViewTestMediator5.NAME,view]);
+	$s.pop();
+}}
+org.puremvc.haxe.core.ViewTestMediator5.__name__ = ["org","puremvc","haxe","core","ViewTestMediator5"];
+org.puremvc.haxe.core.ViewTestMediator5.__super__ = org.puremvc.haxe.patterns.mediator.Mediator;
+for(var k in org.puremvc.haxe.patterns.mediator.Mediator.prototype ) org.puremvc.haxe.core.ViewTestMediator5.prototype[k] = org.puremvc.haxe.patterns.mediator.Mediator.prototype[k];
+org.puremvc.haxe.core.ViewTestMediator5.prototype.getViewTest = function() {
+	$s.push("org.puremvc.haxe.core.ViewTestMediator5::getViewTest");
+	var $spos = $s.length;
+	{
+		var $tmp = this.viewComponent;
+		$s.pop();
+		return $tmp;
+	}
+	$s.pop();
+}
+org.puremvc.haxe.core.ViewTestMediator5.prototype.handleNotification = function(note) {
+	$s.push("org.puremvc.haxe.core.ViewTestMediator5::handleNotification");
+	var $spos = $s.length;
+	this.getViewTest().counter++;
+	$s.pop();
+}
+org.puremvc.haxe.core.ViewTestMediator5.prototype.listNotificationInterests = function() {
+	$s.push("org.puremvc.haxe.core.ViewTestMediator5::listNotificationInterests");
+	var $spos = $s.length;
+	{
+		var $tmp = [org.puremvc.haxe.core.ViewTest.NOTE5];
+		$s.pop();
+		return $tmp;
+	}
+	$s.pop();
+}
+org.puremvc.haxe.core.ViewTestMediator5.prototype.__class__ = org.puremvc.haxe.core.ViewTestMediator5;
 org.puremvc.haxe.interfaces.IModel = function() { }
 org.puremvc.haxe.interfaces.IModel.__name__ = ["org","puremvc","haxe","interfaces","IModel"];
 org.puremvc.haxe.interfaces.IModel.prototype.hasProxy = null;
@@ -1368,6 +1404,7 @@ org.puremvc.haxe.core.ViewTest = function(p) { if( p === $_ ) return; {
 	$s.push("org.puremvc.haxe.core.ViewTest::new");
 	var $spos = $s.length;
 	haxe.unit.TestCase.apply(this,[]);
+	this.counter = 0;
 	$s.pop();
 }}
 org.puremvc.haxe.core.ViewTest.__name__ = ["org","puremvc","haxe","core","ViewTest"];
@@ -1381,6 +1418,7 @@ org.puremvc.haxe.core.ViewTest.prototype.cleanup = function() {
 	org.puremvc.haxe.core.View.getInstance().removeMediator(org.puremvc.haxe.core.ViewTestMediator3.NAME);
 	$s.pop();
 }
+org.puremvc.haxe.core.ViewTest.prototype.counter = null;
 org.puremvc.haxe.core.ViewTest.prototype.lastNotification = null;
 org.puremvc.haxe.core.ViewTest.prototype.onRegisterCalled = null;
 org.puremvc.haxe.core.ViewTest.prototype.onRemoveCalled = null;
@@ -1388,8 +1426,8 @@ org.puremvc.haxe.core.ViewTest.prototype.testGetInstance = function() {
 	$s.push("org.puremvc.haxe.core.ViewTest::testGetInstance");
 	var $spos = $s.length;
 	var view = org.puremvc.haxe.core.View.getInstance();
-	this.assertTrue(view != null,{ fileName : "ViewTest.hx", lineNumber : 40, className : "org.puremvc.haxe.core.ViewTest", methodName : "testGetInstance"});
-	this.assertTrue(Std["is"](view,org.puremvc.haxe.interfaces.IView),{ fileName : "ViewTest.hx", lineNumber : 41, className : "org.puremvc.haxe.core.ViewTest", methodName : "testGetInstance"});
+	this.assertTrue(view != null,{ fileName : "ViewTest.hx", lineNumber : 50, className : "org.puremvc.haxe.core.ViewTest", methodName : "testGetInstance"});
+	this.assertTrue(Std["is"](view,org.puremvc.haxe.interfaces.IView),{ fileName : "ViewTest.hx", lineNumber : 51, className : "org.puremvc.haxe.core.ViewTest", methodName : "testGetInstance"});
 	$s.pop();
 }
 org.puremvc.haxe.core.ViewTest.prototype.testHasMediator = function() {
@@ -1398,9 +1436,45 @@ org.puremvc.haxe.core.ViewTest.prototype.testHasMediator = function() {
 	var view = org.puremvc.haxe.core.View.getInstance();
 	var mediator = new org.puremvc.haxe.patterns.mediator.Mediator("hasMediatorTest",this);
 	view.registerMediator(mediator);
-	this.assertTrue(view.hasMediator("hasMediatorTest"),{ fileName : "ViewTest.hx", lineNumber : 143, className : "org.puremvc.haxe.core.ViewTest", methodName : "testHasMediator"});
+	this.assertTrue(view.hasMediator("hasMediatorTest"),{ fileName : "ViewTest.hx", lineNumber : 153, className : "org.puremvc.haxe.core.ViewTest", methodName : "testHasMediator"});
 	view.removeMediator("hasMediatorTest");
-	this.assertFalse(view.hasMediator("hasMediatorTest"),{ fileName : "ViewTest.hx", lineNumber : 149, className : "org.puremvc.haxe.core.ViewTest", methodName : "testHasMediator"});
+	this.assertFalse(view.hasMediator("hasMediatorTest"),{ fileName : "ViewTest.hx", lineNumber : 159, className : "org.puremvc.haxe.core.ViewTest", methodName : "testHasMediator"});
+	$s.pop();
+}
+org.puremvc.haxe.core.ViewTest.prototype.testMediatorReregistration = function() {
+	$s.push("org.puremvc.haxe.core.ViewTest::testMediatorReregistration");
+	var $spos = $s.length;
+	var view = org.puremvc.haxe.core.View.getInstance();
+	view.registerMediator(new org.puremvc.haxe.core.ViewTestMediator5(this));
+	view.registerMediator(new org.puremvc.haxe.core.ViewTestMediator5(this));
+	this.counter = 0;
+	view.notifyObservers(new org.puremvc.haxe.patterns.observer.Notification(org.puremvc.haxe.core.ViewTest.NOTE5));
+	this.assertEquals(this.counter,1,{ fileName : "ViewTest.hx", lineNumber : 365, className : "org.puremvc.haxe.core.ViewTest", methodName : "testMediatorReregistration"});
+	view.removeMediator(org.puremvc.haxe.core.ViewTestMediator5.NAME);
+	this.assertTrue(view.retrieveMediator(org.puremvc.haxe.core.ViewTestMediator5.NAME) == null,{ fileName : "ViewTest.hx", lineNumber : 371, className : "org.puremvc.haxe.core.ViewTest", methodName : "testMediatorReregistration"});
+	this.counter = 0;
+	view.notifyObservers(new org.puremvc.haxe.patterns.observer.Notification(org.puremvc.haxe.core.ViewTest.NOTE5));
+	this.assertEquals(this.counter,0,{ fileName : "ViewTest.hx", lineNumber : 376, className : "org.puremvc.haxe.core.ViewTest", methodName : "testMediatorReregistration"});
+	$s.pop();
+}
+org.puremvc.haxe.core.ViewTest.prototype.testModifyObserverListDuringNotification = function() {
+	$s.push("org.puremvc.haxe.core.ViewTest::testModifyObserverListDuringNotification");
+	var $spos = $s.length;
+	var view = org.puremvc.haxe.core.View.getInstance();
+	view.registerMediator(new org.puremvc.haxe.core.ViewTestMediator6(org.puremvc.haxe.core.ViewTestMediator6 + "/1",this));
+	view.registerMediator(new org.puremvc.haxe.core.ViewTestMediator6(org.puremvc.haxe.core.ViewTestMediator6 + "/2",this));
+	view.registerMediator(new org.puremvc.haxe.core.ViewTestMediator6(org.puremvc.haxe.core.ViewTestMediator6 + "/3",this));
+	view.registerMediator(new org.puremvc.haxe.core.ViewTestMediator6(org.puremvc.haxe.core.ViewTestMediator6 + "/4",this));
+	view.registerMediator(new org.puremvc.haxe.core.ViewTestMediator6(org.puremvc.haxe.core.ViewTestMediator6 + "/5",this));
+	view.registerMediator(new org.puremvc.haxe.core.ViewTestMediator6(org.puremvc.haxe.core.ViewTestMediator6 + "/6",this));
+	view.registerMediator(new org.puremvc.haxe.core.ViewTestMediator6(org.puremvc.haxe.core.ViewTestMediator6 + "/7",this));
+	view.registerMediator(new org.puremvc.haxe.core.ViewTestMediator6(org.puremvc.haxe.core.ViewTestMediator6 + "/8",this));
+	this.counter = 0;
+	view.notifyObservers(new org.puremvc.haxe.patterns.observer.Notification(org.puremvc.haxe.core.ViewTest.NOTE6));
+	this.assertEquals(this.counter,8,{ fileName : "ViewTest.hx", lineNumber : 416, className : "org.puremvc.haxe.core.ViewTest", methodName : "testModifyObserverListDuringNotification"});
+	this.counter = 0;
+	view.notifyObservers(new org.puremvc.haxe.patterns.observer.Notification(org.puremvc.haxe.core.ViewTest.NOTE6));
+	this.assertEquals(this.counter,0,{ fileName : "ViewTest.hx", lineNumber : 422, className : "org.puremvc.haxe.core.ViewTest", methodName : "testModifyObserverListDuringNotification"});
 	$s.pop();
 }
 org.puremvc.haxe.core.ViewTest.prototype.testOnRegisterAndOnRemove = function() {
@@ -1411,9 +1485,9 @@ org.puremvc.haxe.core.ViewTest.prototype.testOnRegisterAndOnRemove = function() 
 	var view = org.puremvc.haxe.core.View.getInstance();
 	var mediator = new org.puremvc.haxe.core.ViewTestMediator4(this);
 	view.registerMediator(mediator);
-	this.assertTrue(this.onRegisterCalled,{ fileName : "ViewTest.hx", lineNumber : 192, className : "org.puremvc.haxe.core.ViewTest", methodName : "testOnRegisterAndOnRemove"});
+	this.assertTrue(this.onRegisterCalled,{ fileName : "ViewTest.hx", lineNumber : 202, className : "org.puremvc.haxe.core.ViewTest", methodName : "testOnRegisterAndOnRemove"});
 	view.removeMediator(org.puremvc.haxe.core.ViewTestMediator4.NAME);
-	this.assertTrue(this.onRemoveCalled,{ fileName : "ViewTest.hx", lineNumber : 198, className : "org.puremvc.haxe.core.ViewTest", methodName : "testOnRegisterAndOnRemove"});
+	this.assertTrue(this.onRemoveCalled,{ fileName : "ViewTest.hx", lineNumber : 208, className : "org.puremvc.haxe.core.ViewTest", methodName : "testOnRegisterAndOnRemove"});
 	this.cleanup();
 	$s.pop();
 }
@@ -1425,7 +1499,7 @@ org.puremvc.haxe.core.ViewTest.prototype.testRegisterAndNotifyObserver = functio
 	view.registerObserver(org.puremvc.haxe.core.ViewTestNote.NAME,observer);
 	var note = org.puremvc.haxe.core.ViewTestNote.create(10.0);
 	view.notifyObservers(note);
-	this.assertEquals(this.viewTestVar,10.0,{ fileName : "ViewTest.hx", lineNumber : 88, className : "org.puremvc.haxe.core.ViewTest", methodName : "testRegisterAndNotifyObserver"});
+	this.assertEquals(this.viewTestVar,10.0,{ fileName : "ViewTest.hx", lineNumber : 98, className : "org.puremvc.haxe.core.ViewTest", methodName : "testRegisterAndNotifyObserver"});
 	$s.pop();
 }
 org.puremvc.haxe.core.ViewTest.prototype.testRegisterAndRemoveMediator = function() {
@@ -1435,8 +1509,8 @@ org.puremvc.haxe.core.ViewTest.prototype.testRegisterAndRemoveMediator = functio
 	var mediator = new org.puremvc.haxe.patterns.mediator.Mediator("testing",this);
 	view.registerMediator(mediator);
 	var removedMediator = view.removeMediator("testing");
-	this.assertEquals(removedMediator.getMediatorName(),"testing",{ fileName : "ViewTest.hx", lineNumber : 168, className : "org.puremvc.haxe.core.ViewTest", methodName : "testRegisterAndRemoveMediator"});
-	this.assertTrue(view.retrieveMediator("testing") == null,{ fileName : "ViewTest.hx", lineNumber : 171, className : "org.puremvc.haxe.core.ViewTest", methodName : "testRegisterAndRemoveMediator"});
+	this.assertEquals(removedMediator.getMediatorName(),"testing",{ fileName : "ViewTest.hx", lineNumber : 178, className : "org.puremvc.haxe.core.ViewTest", methodName : "testRegisterAndRemoveMediator"});
+	this.assertTrue(view.retrieveMediator("testing") == null,{ fileName : "ViewTest.hx", lineNumber : 181, className : "org.puremvc.haxe.core.ViewTest", methodName : "testRegisterAndRemoveMediator"});
 	this.cleanup();
 	$s.pop();
 }
@@ -1447,7 +1521,7 @@ org.puremvc.haxe.core.ViewTest.prototype.testRegisterAndRetrieveMediator = funct
 	var viewTestMediator = new org.puremvc.haxe.core.ViewTestMediator(this);
 	view.registerMediator(viewTestMediator);
 	var mediator = view.retrieveMediator(org.puremvc.haxe.core.ViewTestMediator.NAME);
-	this.assertTrue(Std["is"](mediator,org.puremvc.haxe.core.ViewTestMediator),{ fileName : "ViewTest.hx", lineNumber : 123, className : "org.puremvc.haxe.core.ViewTest", methodName : "testRegisterAndRetrieveMediator"});
+	this.assertTrue(Std["is"](mediator,org.puremvc.haxe.core.ViewTestMediator),{ fileName : "ViewTest.hx", lineNumber : 133, className : "org.puremvc.haxe.core.ViewTest", methodName : "testRegisterAndRetrieveMediator"});
 	this.cleanup();
 	$s.pop();
 }
@@ -1457,16 +1531,16 @@ org.puremvc.haxe.core.ViewTest.prototype.testRemoveMediatorAndSubsequentNotify =
 	var view = org.puremvc.haxe.core.View.getInstance();
 	view.registerMediator(new org.puremvc.haxe.core.ViewTestMediator2(this));
 	view.notifyObservers(new org.puremvc.haxe.patterns.observer.Notification(org.puremvc.haxe.core.ViewTest.NOTE1));
-	this.assertEquals(this.lastNotification,org.puremvc.haxe.core.ViewTest.NOTE1,{ fileName : "ViewTest.hx", lineNumber : 257, className : "org.puremvc.haxe.core.ViewTest", methodName : "testRemoveMediatorAndSubsequentNotify"});
+	this.assertEquals(this.lastNotification,org.puremvc.haxe.core.ViewTest.NOTE1,{ fileName : "ViewTest.hx", lineNumber : 267, className : "org.puremvc.haxe.core.ViewTest", methodName : "testRemoveMediatorAndSubsequentNotify"});
 	view.notifyObservers(new org.puremvc.haxe.patterns.observer.Notification(org.puremvc.haxe.core.ViewTest.NOTE2));
-	this.assertEquals(this.lastNotification,org.puremvc.haxe.core.ViewTest.NOTE2,{ fileName : "ViewTest.hx", lineNumber : 260, className : "org.puremvc.haxe.core.ViewTest", methodName : "testRemoveMediatorAndSubsequentNotify"});
+	this.assertEquals(this.lastNotification,org.puremvc.haxe.core.ViewTest.NOTE2,{ fileName : "ViewTest.hx", lineNumber : 270, className : "org.puremvc.haxe.core.ViewTest", methodName : "testRemoveMediatorAndSubsequentNotify"});
 	view.removeMediator(org.puremvc.haxe.core.ViewTestMediator2.NAME);
-	this.assertEquals(view.retrieveMediator(org.puremvc.haxe.core.ViewTestMediator2.NAME),null,{ fileName : "ViewTest.hx", lineNumber : 266, className : "org.puremvc.haxe.core.ViewTest", methodName : "testRemoveMediatorAndSubsequentNotify"});
+	this.assertEquals(view.retrieveMediator(org.puremvc.haxe.core.ViewTestMediator2.NAME),null,{ fileName : "ViewTest.hx", lineNumber : 276, className : "org.puremvc.haxe.core.ViewTest", methodName : "testRemoveMediatorAndSubsequentNotify"});
 	this.lastNotification = null;
 	view.notifyObservers(new org.puremvc.haxe.patterns.observer.Notification(org.puremvc.haxe.core.ViewTest.NOTE1));
-	this.assertTrue(this.lastNotification != org.puremvc.haxe.core.ViewTest.NOTE1,{ fileName : "ViewTest.hx", lineNumber : 274, className : "org.puremvc.haxe.core.ViewTest", methodName : "testRemoveMediatorAndSubsequentNotify"});
+	this.assertTrue(this.lastNotification != org.puremvc.haxe.core.ViewTest.NOTE1,{ fileName : "ViewTest.hx", lineNumber : 284, className : "org.puremvc.haxe.core.ViewTest", methodName : "testRemoveMediatorAndSubsequentNotify"});
 	view.notifyObservers(new org.puremvc.haxe.patterns.observer.Notification(org.puremvc.haxe.core.ViewTest.NOTE2));
-	this.assertTrue(this.lastNotification != org.puremvc.haxe.core.ViewTest.NOTE2,{ fileName : "ViewTest.hx", lineNumber : 277, className : "org.puremvc.haxe.core.ViewTest", methodName : "testRemoveMediatorAndSubsequentNotify"});
+	this.assertTrue(this.lastNotification != org.puremvc.haxe.core.ViewTest.NOTE2,{ fileName : "ViewTest.hx", lineNumber : 287, className : "org.puremvc.haxe.core.ViewTest", methodName : "testRemoveMediatorAndSubsequentNotify"});
 	this.cleanup();
 	$s.pop();
 }
@@ -1477,20 +1551,20 @@ org.puremvc.haxe.core.ViewTest.prototype.testRemoveOneOfTwoMediatorsAndSubsequen
 	view.registerMediator(new org.puremvc.haxe.core.ViewTestMediator2(this));
 	view.registerMediator(new org.puremvc.haxe.core.ViewTestMediator3(this));
 	view.notifyObservers(new org.puremvc.haxe.patterns.observer.Notification(org.puremvc.haxe.core.ViewTest.NOTE1));
-	this.assertEquals(this.lastNotification,org.puremvc.haxe.core.ViewTest.NOTE1,{ fileName : "ViewTest.hx", lineNumber : 301, className : "org.puremvc.haxe.core.ViewTest", methodName : "testRemoveOneOfTwoMediatorsAndSubsequentNotify"});
+	this.assertEquals(this.lastNotification,org.puremvc.haxe.core.ViewTest.NOTE1,{ fileName : "ViewTest.hx", lineNumber : 311, className : "org.puremvc.haxe.core.ViewTest", methodName : "testRemoveOneOfTwoMediatorsAndSubsequentNotify"});
 	view.notifyObservers(new org.puremvc.haxe.patterns.observer.Notification(org.puremvc.haxe.core.ViewTest.NOTE2));
-	this.assertEquals(this.lastNotification,org.puremvc.haxe.core.ViewTest.NOTE2,{ fileName : "ViewTest.hx", lineNumber : 304, className : "org.puremvc.haxe.core.ViewTest", methodName : "testRemoveOneOfTwoMediatorsAndSubsequentNotify"});
+	this.assertEquals(this.lastNotification,org.puremvc.haxe.core.ViewTest.NOTE2,{ fileName : "ViewTest.hx", lineNumber : 314, className : "org.puremvc.haxe.core.ViewTest", methodName : "testRemoveOneOfTwoMediatorsAndSubsequentNotify"});
 	view.notifyObservers(new org.puremvc.haxe.patterns.observer.Notification(org.puremvc.haxe.core.ViewTest.NOTE3));
-	this.assertEquals(this.lastNotification,org.puremvc.haxe.core.ViewTest.NOTE3,{ fileName : "ViewTest.hx", lineNumber : 307, className : "org.puremvc.haxe.core.ViewTest", methodName : "testRemoveOneOfTwoMediatorsAndSubsequentNotify"});
+	this.assertEquals(this.lastNotification,org.puremvc.haxe.core.ViewTest.NOTE3,{ fileName : "ViewTest.hx", lineNumber : 317, className : "org.puremvc.haxe.core.ViewTest", methodName : "testRemoveOneOfTwoMediatorsAndSubsequentNotify"});
 	view.removeMediator(org.puremvc.haxe.core.ViewTestMediator2.NAME);
-	this.assertEquals(view.retrieveMediator(org.puremvc.haxe.core.ViewTestMediator2.NAME),null,{ fileName : "ViewTest.hx", lineNumber : 313, className : "org.puremvc.haxe.core.ViewTest", methodName : "testRemoveOneOfTwoMediatorsAndSubsequentNotify"});
+	this.assertEquals(view.retrieveMediator(org.puremvc.haxe.core.ViewTestMediator2.NAME),null,{ fileName : "ViewTest.hx", lineNumber : 323, className : "org.puremvc.haxe.core.ViewTest", methodName : "testRemoveOneOfTwoMediatorsAndSubsequentNotify"});
 	this.lastNotification = null;
 	view.notifyObservers(new org.puremvc.haxe.patterns.observer.Notification(org.puremvc.haxe.core.ViewTest.NOTE1));
-	this.assertTrue(this.lastNotification != org.puremvc.haxe.core.ViewTest.NOTE1,{ fileName : "ViewTest.hx", lineNumber : 320, className : "org.puremvc.haxe.core.ViewTest", methodName : "testRemoveOneOfTwoMediatorsAndSubsequentNotify"});
+	this.assertTrue(this.lastNotification != org.puremvc.haxe.core.ViewTest.NOTE1,{ fileName : "ViewTest.hx", lineNumber : 330, className : "org.puremvc.haxe.core.ViewTest", methodName : "testRemoveOneOfTwoMediatorsAndSubsequentNotify"});
 	view.notifyObservers(new org.puremvc.haxe.patterns.observer.Notification(org.puremvc.haxe.core.ViewTest.NOTE2));
-	this.assertTrue(this.lastNotification != org.puremvc.haxe.core.ViewTest.NOTE2,{ fileName : "ViewTest.hx", lineNumber : 323, className : "org.puremvc.haxe.core.ViewTest", methodName : "testRemoveOneOfTwoMediatorsAndSubsequentNotify"});
+	this.assertTrue(this.lastNotification != org.puremvc.haxe.core.ViewTest.NOTE2,{ fileName : "ViewTest.hx", lineNumber : 333, className : "org.puremvc.haxe.core.ViewTest", methodName : "testRemoveOneOfTwoMediatorsAndSubsequentNotify"});
 	view.notifyObservers(new org.puremvc.haxe.patterns.observer.Notification(org.puremvc.haxe.core.ViewTest.NOTE3));
-	this.assertTrue(this.lastNotification == org.puremvc.haxe.core.ViewTest.NOTE3,{ fileName : "ViewTest.hx", lineNumber : 326, className : "org.puremvc.haxe.core.ViewTest", methodName : "testRemoveOneOfTwoMediatorsAndSubsequentNotify"});
+	this.assertTrue(this.lastNotification == org.puremvc.haxe.core.ViewTest.NOTE3,{ fileName : "ViewTest.hx", lineNumber : 336, className : "org.puremvc.haxe.core.ViewTest", methodName : "testRemoveOneOfTwoMediatorsAndSubsequentNotify"});
 	this.cleanup();
 	$s.pop();
 }
@@ -1499,14 +1573,14 @@ org.puremvc.haxe.core.ViewTest.prototype.testSuccessiveRegisterAndRemoveMediator
 	var $spos = $s.length;
 	var view = org.puremvc.haxe.core.View.getInstance();
 	view.registerMediator(new org.puremvc.haxe.core.ViewTestMediator(this));
-	this.assertTrue(Std["is"](view.retrieveMediator(org.puremvc.haxe.core.ViewTestMediator.NAME),org.puremvc.haxe.core.ViewTestMediator),{ fileName : "ViewTest.hx", lineNumber : 216, className : "org.puremvc.haxe.core.ViewTest", methodName : "testSuccessiveRegisterAndRemoveMediator"});
+	this.assertTrue(Std["is"](view.retrieveMediator(org.puremvc.haxe.core.ViewTestMediator.NAME),org.puremvc.haxe.core.ViewTestMediator),{ fileName : "ViewTest.hx", lineNumber : 226, className : "org.puremvc.haxe.core.ViewTest", methodName : "testSuccessiveRegisterAndRemoveMediator"});
 	view.removeMediator(org.puremvc.haxe.core.ViewTestMediator.NAME);
-	this.assertEquals(view.retrieveMediator(org.puremvc.haxe.core.ViewTestMediator.NAME),null,{ fileName : "ViewTest.hx", lineNumber : 222, className : "org.puremvc.haxe.core.ViewTest", methodName : "testSuccessiveRegisterAndRemoveMediator"});
-	this.assertEquals(view.removeMediator(org.puremvc.haxe.core.ViewTestMediator.NAME),null,{ fileName : "ViewTest.hx", lineNumber : 225, className : "org.puremvc.haxe.core.ViewTest", methodName : "testSuccessiveRegisterAndRemoveMediator"});
+	this.assertEquals(view.retrieveMediator(org.puremvc.haxe.core.ViewTestMediator.NAME),null,{ fileName : "ViewTest.hx", lineNumber : 232, className : "org.puremvc.haxe.core.ViewTest", methodName : "testSuccessiveRegisterAndRemoveMediator"});
+	this.assertEquals(view.removeMediator(org.puremvc.haxe.core.ViewTestMediator.NAME),null,{ fileName : "ViewTest.hx", lineNumber : 235, className : "org.puremvc.haxe.core.ViewTest", methodName : "testSuccessiveRegisterAndRemoveMediator"});
 	view.registerMediator(new org.puremvc.haxe.core.ViewTestMediator(this));
-	this.assertTrue(Std["is"](view.retrieveMediator(org.puremvc.haxe.core.ViewTestMediator.NAME),org.puremvc.haxe.core.ViewTestMediator),{ fileName : "ViewTest.hx", lineNumber : 230, className : "org.puremvc.haxe.core.ViewTest", methodName : "testSuccessiveRegisterAndRemoveMediator"});
+	this.assertTrue(Std["is"](view.retrieveMediator(org.puremvc.haxe.core.ViewTestMediator.NAME),org.puremvc.haxe.core.ViewTestMediator),{ fileName : "ViewTest.hx", lineNumber : 240, className : "org.puremvc.haxe.core.ViewTest", methodName : "testSuccessiveRegisterAndRemoveMediator"});
 	view.removeMediator(org.puremvc.haxe.core.ViewTestMediator.NAME);
-	this.assertEquals(view.retrieveMediator(org.puremvc.haxe.core.ViewTestMediator.NAME),null,{ fileName : "ViewTest.hx", lineNumber : 236, className : "org.puremvc.haxe.core.ViewTest", methodName : "testSuccessiveRegisterAndRemoveMediator"});
+	this.assertEquals(view.retrieveMediator(org.puremvc.haxe.core.ViewTestMediator.NAME),null,{ fileName : "ViewTest.hx", lineNumber : 246, className : "org.puremvc.haxe.core.ViewTest", methodName : "testSuccessiveRegisterAndRemoveMediator"});
 	this.cleanup();
 	$s.pop();
 }
@@ -2740,6 +2814,48 @@ PureMVCTestRunner.main = function() {
 	$s.pop();
 }
 PureMVCTestRunner.prototype.__class__ = PureMVCTestRunner;
+org.puremvc.haxe.core.ViewTestMediator6 = function(name,view) { if( name === $_ ) return; {
+	$s.push("org.puremvc.haxe.core.ViewTestMediator6::new");
+	var $spos = $s.length;
+	org.puremvc.haxe.patterns.mediator.Mediator.apply(this,[name,view]);
+	$s.pop();
+}}
+org.puremvc.haxe.core.ViewTestMediator6.__name__ = ["org","puremvc","haxe","core","ViewTestMediator6"];
+org.puremvc.haxe.core.ViewTestMediator6.__super__ = org.puremvc.haxe.patterns.mediator.Mediator;
+for(var k in org.puremvc.haxe.patterns.mediator.Mediator.prototype ) org.puremvc.haxe.core.ViewTestMediator6.prototype[k] = org.puremvc.haxe.patterns.mediator.Mediator.prototype[k];
+org.puremvc.haxe.core.ViewTestMediator6.prototype.getViewTest = function() {
+	$s.push("org.puremvc.haxe.core.ViewTestMediator6::getViewTest");
+	var $spos = $s.length;
+	{
+		var $tmp = this.viewComponent;
+		$s.pop();
+		return $tmp;
+	}
+	$s.pop();
+}
+org.puremvc.haxe.core.ViewTestMediator6.prototype.handleNotification = function(note) {
+	$s.push("org.puremvc.haxe.core.ViewTestMediator6::handleNotification");
+	var $spos = $s.length;
+	this.facade.removeMediator(this.getMediatorName());
+	$s.pop();
+}
+org.puremvc.haxe.core.ViewTestMediator6.prototype.listNotificationInterests = function() {
+	$s.push("org.puremvc.haxe.core.ViewTestMediator6::listNotificationInterests");
+	var $spos = $s.length;
+	{
+		var $tmp = [org.puremvc.haxe.core.ViewTest.NOTE6];
+		$s.pop();
+		return $tmp;
+	}
+	$s.pop();
+}
+org.puremvc.haxe.core.ViewTestMediator6.prototype.onRemove = function() {
+	$s.push("org.puremvc.haxe.core.ViewTestMediator6::onRemove");
+	var $spos = $s.length;
+	this.getViewTest().counter++;
+	$s.pop();
+}
+org.puremvc.haxe.core.ViewTestMediator6.prototype.__class__ = org.puremvc.haxe.core.ViewTestMediator6;
 org.puremvc.haxe.patterns.observer.Observer = function(notifyMethod,notifyContext) { if( notifyMethod === $_ ) return; {
 	$s.push("org.puremvc.haxe.patterns.observer.Observer::new");
 	var $spos = $s.length;
@@ -3027,9 +3143,16 @@ org.puremvc.haxe.core.View.prototype.notifyObservers = function(notification) {
 	$s.push("org.puremvc.haxe.core.View::notifyObservers");
 	var $spos = $s.length;
 	if(this.observerMap.exists(notification.getName())) {
-		var iterator = this.observerMap.get(notification.getName()).iterator();
-		{ var $it10 = iterator;
+		var observers_ref = this.observerMap.get(notification.getName());
+		var observers = new List();
+		var iterator_ref = observers_ref.iterator();
+		{ var $it10 = iterator_ref;
 		while( $it10.hasNext() ) { var observer = $it10.next();
+		observers.add(observer);
+		}}
+		var iterator = observers.iterator();
+		{ var $it11 = iterator;
+		while( $it11.hasNext() ) { var observer = $it11.next();
 		observer.notifyObserver(notification);
 		}}
 	}
@@ -3039,6 +3162,10 @@ org.puremvc.haxe.core.View.prototype.observerMap = null;
 org.puremvc.haxe.core.View.prototype.registerMediator = function(mediator) {
 	$s.push("org.puremvc.haxe.core.View::registerMediator");
 	var $spos = $s.length;
+	if(this.mediatorMap.exists(mediator.getMediatorName())) {
+		$s.pop();
+		return;
+	}
 	this.mediatorMap.set(mediator.getMediatorName(),mediator);
 	var interests = mediator.listNotificationInterests();
 	if(interests.length > 0) {
@@ -3087,8 +3214,8 @@ org.puremvc.haxe.core.View.prototype.removeObserver = function(notificationName,
 	$s.push("org.puremvc.haxe.core.View::removeObserver");
 	var $spos = $s.length;
 	var observers = this.observerMap.get(notificationName);
-	{ var $it11 = observers.iterator();
-	while( $it11.hasNext() ) { var observer = $it11.next();
+	{ var $it12 = observers.iterator();
+	while( $it12.hasNext() ) { var observer = $it12.next();
 	{
 		if(observer.compareNotifyContext(notifyContext) == true) {
 			observers.remove(observer);
@@ -3136,9 +3263,9 @@ Hash.prototype.exists = function(key) {
 			return $tmp;
 		}
 	}
-	catch( $e12 ) {
+	catch( $e13 ) {
 		{
-			var e = $e12;
+			var e = $e13;
 			{
 				$e = [];
 				while($s.length >= $spos) $e.unshift($s.pop());
@@ -3237,8 +3364,8 @@ Hash.prototype.toString = function() {
 	var s = new StringBuf();
 	s.b += "{";
 	var it = this.keys();
-	{ var $it13 = it;
-	while( $it13.hasNext() ) { var i = $it13.next();
+	{ var $it14 = it;
+	while( $it14.hasNext() ) { var i = $it14.next();
 	{
 		s.b += i;
 		s.b += " => ";
@@ -3745,8 +3872,8 @@ haxe.unit.TestResult.prototype.toString = function() {
 	var $spos = $s.length;
 	var buf = new StringBuf();
 	var failures = 0;
-	{ var $it14 = this.m_tests.iterator();
-	while( $it14.hasNext() ) { var test = $it14.next();
+	{ var $it15 = this.m_tests.iterator();
+	while( $it15.hasNext() ) { var test = $it15.next();
 	{
 		if(test.success == false) {
 			buf.b += "* ";
@@ -4183,11 +4310,16 @@ org.puremvc.haxe.core.ModelTestProxy.NAME = "ModelTestProxy";
 org.puremvc.haxe.core.ModelTestProxy.ON_REGISTER_CALLED = "onRegister Called";
 org.puremvc.haxe.core.ModelTestProxy.ON_REMOVE_CALLED = "onRemove Called";
 org.puremvc.haxe.core.ViewTestMediator2.NAME = "ViewTestMediator2";
+org.puremvc.haxe.core.ViewTestMediator5.NAME = "ViewTestMediator5";
 org.puremvc.haxe.core.ViewTestNote.NAME = "ViewTestNote";
 org.puremvc.haxe.core.ViewTest.NOTE1 = "Notification1";
 org.puremvc.haxe.core.ViewTest.NOTE2 = "Notification2";
 org.puremvc.haxe.core.ViewTest.NOTE3 = "Notification3";
+org.puremvc.haxe.core.ViewTest.NOTE4 = "Notification4";
+org.puremvc.haxe.core.ViewTest.NOTE5 = "Notification5";
+org.puremvc.haxe.core.ViewTest.NOTE6 = "Notification6";
 org.puremvc.haxe.core.ViewTestMediator3.NAME = "ViewTestMediator3";
+org.puremvc.haxe.core.ViewTestMediator6.NAME = "ViewTestMediator6";
 org.puremvc.haxe.core.ViewTestMediator.NAME = "ViewTestMediator";
 org.puremvc.haxe.core.ViewTestMediator4.NAME = "ViewTestMediator4";
 js.Lib.document = document;

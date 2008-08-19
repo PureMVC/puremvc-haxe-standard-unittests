@@ -5,40 +5,40 @@
  */
 package org.puremvc.haxe.core;
 
+import org.puremvc.haxe.interfaces.IMediator;
 import org.puremvc.haxe.interfaces.INotification;
 import org.puremvc.haxe.patterns.mediator.Mediator;
 	
 /**
  * A Mediator class used by ViewTest.
  */
-class ViewTestMediator4<T> extends Mediator
+class ViewTestMediator5 extends Mediator
 {
 	/**
 	 * The Mediator name
 	 */
-	public static var NAME: String = 'ViewTestMediator4';
+	public static var NAME: String = 'ViewTestMediator5';
 				
 	/**
 	 * Constructor
 	 */
-	public function new( view: T )
+	public function new( view: ViewTest )
 	{
 		super( NAME, view );
 	}
 
-	public function getViewTest(): T
+	override public function listNotificationInterests(): Array<String>
+	{
+		return [ ViewTest.NOTE5 ];
+	}
+
+	override public function handleNotification( note: INotification ): Void
+	{
+		getViewTest().counter++;
+	}
+
+	public function getViewTest(): ViewTest
 	{
 		return viewComponent;
 	}
-				
-	override public function onRegister(): Void
-	{
-		cast( getViewTest() ).onRegisterCalled = true;
-	}
-			
-	override public function onRemove(): Void
-	{
-		cast( getViewTest() ).onRemoveCalled = true;
-	}				
-			
 }
