@@ -3,7 +3,7 @@
 # Your reuse is governed by the Creative Commons Attribution 3.0 License 
 
 #-cp path_to_pureMVC_framework
--cp /Users/marco/Documents/workspace_pureMVC/hx_pureMVC/src
+-cp ../puremvc-haxe-standard-framework/src
 -cp src
 -neko bin/testRunner.n
 -main PureMVCTestRunner
@@ -11,7 +11,7 @@
 
 --next
 #-cp path_to_pureMVC_framework
--cp /Users/marco/Documents/workspace_pureMVC/hx_pureMVC/src
+-cp ../puremvc-haxe-standard-framework/src
 -cp src
 -js bin/testRunner.js
 -main PureMVCTestRunner
@@ -19,7 +19,7 @@
 
 --next
 #-cp path_to_pureMVC_framework
--cp /Users/marco/Documents/workspace_pureMVC/hx_pureMVC/src
+-cp ../puremvc-haxe-standard-framework/src
 -cp src
 -swf bin/testRunnerFl9.swf
 -swf-version 9
@@ -29,7 +29,7 @@
 
 --next
 #-cp path_to_pureMVC_framework
--cp /Users/marco/Documents/workspace_pureMVC/hx_pureMVC/src
+-cp ../puremvc-haxe-standard-framework/src
 -cp src
 -swf bin/testRunnerFl8.swf
 -swf-version 8
@@ -39,7 +39,7 @@
 
 --next
 #-cp path_to_pureMVC_framework
--cp /Users/marco/Documents/workspace_pureMVC/hx_pureMVC/src
+-cp ../puremvc-haxe-standard-framework/src
 -cp src
 -swf bin/testRunnerFl7.swf
 -swf-version 7
@@ -49,7 +49,7 @@
 
 --next
 #-cp path_to_pureMVC_framework
--cp /Users/marco/Documents/workspace_pureMVC/hx_pureMVC/src
+-cp ../puremvc-haxe-standard-framework/src
 -cp src
 -swf bin/testRunnerFl6.swf
 -swf-header 800:200:31
