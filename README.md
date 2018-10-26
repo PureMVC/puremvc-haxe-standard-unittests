@@ -2,8 +2,8 @@
 These are the unit tests for the current PureMVC Standard Framework for Haxe.
 
 * [Discussion](http://forums.puremvc.org/index.php?topic=2047.0)
-* [Live Unit Tests (Target: Flash 6..9)](http://darkstar.puremvc.org/content_header.html?url=http://puremvc.org/pages/demos/Haxe/UnitTests/indexFl.html&desc=PureMVC%20Haxe%20Standard%20Unit%20Tests%20Target:%20Flash)
-* [Live Unit Tests (Target: JavaScript)](http://darkstar.puremvc.org/content_header.html?url=http://puremvc.org/pages/demos/Haxe/UnitTests/indexJs.html&desc=PureMVC%20Haxe%20Standard%20Unit%20Tests%20Target:%20JavaScript)
+* [Live Unit Tests (Target: Flash 6..9)](http://puremvc.org/pages/demos/Haxe/UnitTests/indexFl.html)
+* [Live Unit Tests (Target: JavaScript)](http://puremvc.org/pages/demos/Haxe/UnitTests/indexJs.html)
 
 ## Status
 Production - [Version 1.1.2](https://github.com/PureMVC/puremvc-haxe-standard-unittests/blob/master/VERSION)
